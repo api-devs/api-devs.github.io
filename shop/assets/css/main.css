@@ -3191,3 +3191,7 @@ input, select, textarea {
 hr {
 	color: #000;
 }
+
+#font123 {
+	font-size: 20px;
+}
