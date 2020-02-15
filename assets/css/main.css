@@ -615,6 +615,10 @@ input, select, textarea {
 			display: none;
 		}
 
+    .fab.fa-autoprefixer{
+			font-size: 55px;
+			margin-top: 15px;
+		}
 /* Image */
 
 	.image {
