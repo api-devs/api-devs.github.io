@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <title>API.DEVS | UA.DESIGNER</title>
+    <style>
+@import url('https://fonts.googleapis.com/css?family=Megrim');
+@import url('https://fonts.googleapis.com/css?family=Do+Hyeon');
+
+@font-face {
+    font-family: IBM;
+    src: url('IBM-Logo.ttf');
+   }
+
+    body{
+        margin: 0;
+        padding: 0;
+        background: #fff;
+        font-family: 'Megrim', Arial, sans-serif;
+        color: #fff;
+        animation:noise .3s infinite;
+        background: rgb(0,0,0);
+    }
+    @keyframes noise {
+        0% {
+            background-position: 0px 0px;
+        }
+        100% {
+            background-position: 1000px 1000px;
+        }
+    }
+    .main{
+        margin-top: -150px;
+        z-index: 5;
+        text-align: center;
+    }
+    .site{
+        font-size: 1rem;
+        letter-spacing: .3em;
+        margin-bottom: 3em;
+    }
+    .name{
+        font-family: IBM;
+        font-size: 2.5rem;
+        letter-spacing: .3em;
+        margin-top: 30vh;
+        margin-bottom: .75em;
+    }
+    a {
+        text-decoration: none;
+        display: inline-block;
+        padding: 5px 5px;
+        letter-spacing: 1px;
+        margin: 0 20px;
+        font-family: 'Do Hyeon', 'Arial Narrow', Arial, sans-serif;
+        font-weight: bold;
+        background-image: linear-gradient(#f00 50%, #f00 50%), linear-gradient(silver 50%, silver 50%);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        background-size: 0 1px, 100% 1px;
+        color: #fff;
+        padding-bottom: 3px;
+        transition: .3s ease-in-out;
+        letter-spacing: .2em;
+        font-size: .875rem;
+    }
+
+    a:hover {
+        background-size: 100% 1px, 100% 1px;
+        color: #f23a3a;
+    }
+    .a{
+        display: inline-block;
+    }
+    .row{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 790px;
+        margin: -20px auto;
+    }
+    .block{
+        padding: 0px;
+        width: 240px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px dashed red;
+
+        border-bottom: none;
+        margin: 10px 10px;
+        height: 180px;
+    }
+    .name-link{
+        margin-top: 1em;
+    }
+    .st0{
+        fill:#444;
+        stroke:silver;
+        stroke-miterlimit:10;
+        fill-opacity: 0;
+        animation-timing-function: ease-in-out;
+        animation-fill-mode: forwards;
+
+        animation-name: DrawLine;
+        animation-duration: 4s, 1s, 1s;
+        animation-delay: 0s, 3.5s, 3.5s;
+        stroke-dashArray: 1100;
+        stroke-dashoffset: 0;
+        transition: .2s ease-in-out;
+    }
+    @keyframes DrawLine {
+        from { stroke-dashOffset: 1100; }
+        to { stroke-dashOffset: 0; }
+    }
+    a:hover .st0{stroke:rgba(255, 255, 255, 0); fill-opacity: 1;}
+    @media screen and (max-width:540px) {
+        .a{
+            display: block;
+            margin-bottom: 4px;
+        }
+        .block{
+            width: 100%;
+        }
+    }
+    </style>
+</head>
+<body>
+
+  <div class="main">
+      <div class="name">LOVE</div>
+      <div class="links">
+          <div class="a">
+
+          </div>
+
+
+
+    <div class="row">
+      <a href="https://www.instagram.com/kati_cat3578/">
+<img src="5xYC.gif">
+        <div class="name-link"></div>
+      </a>
+    </div>
+</div>
+<br /> <br /><br /><br />
+<script src="http://megatimer.ru/s/6f761d366c9dd273ab74f9857735fe11.js"></script>
+</body>
+</html>
