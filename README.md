@@ -1,3 +1,3 @@
 # api-devs.github.io
 
-<h1> Ukraine Projecr Server </h>
+<h1> Ukraine Project Server </h>
