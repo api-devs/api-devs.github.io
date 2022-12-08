@@ -1,0 +1,235 @@
+var getJSON=function(url,callback){var xhr=new XMLHttpRequest();xhr.open('GET',url,true);xhr.responseType='json';xhr.onreadystatechange=function(){if(this.readyState==4&&this.status==200){var status=xhr.status;if(status===200){callback(null,xhr.response);}else{callback(status,xhr.response);}}};xhr.send();};function getParameterByName(name,url=window.location.href){name=name.replace(/[\[\]]/g,'\\$&');var regex=new RegExp('[?&]'+name+'(=([^&#]*)|&|#|$)'),results=regex.exec(url);if(!results)return null;if(!results[2])return '';return decodeURIComponent(results[2].replace(/\+/g,' '));}
+var isRequestsMode=getParameterByName("requests");var isSoundMode=getParameterByName("sound");var isHideAllMode=getParameterByName("hideAll");var activeAlerts=[];var additionalRegions=[];detectColorScheme();function IsDarkMode()
+{return document.documentElement.getAttribute("data-theme")==="dark"||isHideAllMode;}
+var loadedCount=0;LoadMap("states.svg","svgMap","svgMap_darkMode",false,"",OnSVGLoadFinished);LoadMap("districts.svg","svgMap svgMapAdditional","svgMap_darkMode",false,"",OnSVGLoadFinished);LoadMap("names.svg","svgMap svgMapAdditional svgLabels",false,"",null);function OnSVGLoadFinished()
+{loadedCount+=1;if(loadedCount>=2)
+{if(isRequestsMode){setInterval(OnTimerTicked,5000);OnTimerTicked();}
+else
+CentrifugoConnect();setInterval(ReloadWindow,7200000);}}
+function ParseData()
+{ParseAlerts();ParseArtillery();}
+function SetData(alerts,artillery,actionIndex)
+{if(lastActionIndex>=actionIndex)
+return;if(lastActionIndex!=-1&&isSoundMode)
+{var audio=document.getElementById("updateSound");audio.currentTime=0;audio.play();}
+if(alerts!=null)
+ParseAlertsData(alerts);if(artillery!=null)
+ParseArtilleryData(artillery);lastActionIndex=actionIndex;}
+function LoadMap(svgName,className,darkThemeClassName,isAdditional,regionId,callback)
+{var alertListItem=document.querySelector('.svgMapHolder');fetch(svgName).then(async(response)=>{if(response.ok){var text=await response.text();var parser=new DOMParser();var doc=parser.parseFromString(text,"image/svg+xml");var element=doc.documentElement;element.setAttribute("class",className);alertListItem.appendChild(element);if(IsDarkMode()){element.classList.add(darkThemeClassName);setStatesDarkMode(true);}
+if(isAdditional)
+{additionalRegions.push({key:regionId,value:element});element.style.pointerEvents="none";}
+if(callback!=null)
+{callback();}}}).catch(e=>console.error('EXCEPTION: ',e));}
+function onStateClick(state)
+{ShowStateHistory(state.getAttribute("id"));}
+function AddAlert(regionId,isFromLoad=false)
+{var regions=document.querySelectorAll(`[id="${regionId}"]`);var url="Communities/"+regionId.toString()+".svg";if(regions.length===0)
+{if(isFromLoad)
+return;LoadMap(url,"svgMap svgMapAdditional","svgMap_darkMode",true,regionId.toString(),()=>{AddAlert(regionId,true);});return;}
+for(var i=0;i<regions.length;i++)
+{SetHighlight(regions[i],regionId);}
+if(!activeAlerts.includes(regionId))
+activeAlerts.push(regionId);}
+function SetHighlight(item,regionId)
+{if(!item.classList.contains("regionAlert"))
+item.classList.add("regionAlert");var isDist=item.classList.contains("dist");var isCom=item.classList.contains("com");if(isDist)
+item.classList.add("dist_alarmed");if(isCom)
+item.classList.add("community_alarmed");if(IsDarkMode())
+{if(!item.classList.contains("regionAlert_darkMode"))
+item.classList.add("regionAlert_darkMode");if(isDist)
+item.classList.add("dist_alarmed_darkMode");if(isCom)
+item.classList.add("community_alarmed_darkMode");}
+var regionTexts=document.querySelectorAll(`[textId="${regionId}"]`);if(regionTexts!=null)
+{for(var i=0;i<regionTexts.length;i++){regionTexts[i].classList.add("textAlert");regionTexts[i].setAttribute("font-weight","normal");}}}
+function CheckActiveAlerts()
+{var regions=document.querySelectorAll(`.regionAlert`);for(var i=0;i<regions.length;i++)
+{var item=regions[i];var id=item.getAttribute("id");if(!activeAlerts.includes(id)){item.classList.remove("regionAlert");item.classList.remove("regionAlert_darkMode");item.classList.remove("dist_alarmed");item.classList.remove("dist_alarmed_darkMode");item.classList.remove("regionInfo");item.classList.remove("regionInfo_darkMode");item.style.fillOpacity=1;item.style.strokeOpacity=1;var additionalRegionIndex=GetIndexFromAdditionalRegions(id);if(additionalRegionIndex!==-1)
+{var element=additionalRegions[additionalRegionIndex].value;RemoveFromAdditionalRegions(id);element.remove();}
+var regionTexts=document.querySelectorAll(`[textId="${id}"]`);if(regionTexts!=null){for(var j=0;j<regionTexts.length;j++){regionTexts[j].classList.remove("textAlert");regionTexts[j].setAttribute("font-weight","bold");}}}}}
+function RemoveFromAdditionalRegions(regionId)
+{for(var index=0;index<additionalRegions.length;index++){var elem=additionalRegions[index];if(elem.key===regionId){additionalRegions.splice(index,1);}}}
+function GetIndexFromAdditionalRegions(regionId)
+{for(var index=0;index<additionalRegions.length;index++){var elem=additionalRegions[index];if(elem.key===regionId){return index;}}
+return-1;}
+function hideAll()
+{if(!isHideAllMode)
+return;var onlineUsers=document.getElementById('activeUsers');var activeAlarms=document.getElementById('activeAlerts');var themeSwitcher=document.getElementById('switch');var statsBtn=document.getElementById('statsBtn');var header=document.querySelector('.header');var footer=document.getElementById('mapFooter');onlineUsers.style.display="none";activeAlarms.style.display="none";themeSwitcher.style.display="none";statsBtn.style.display="none";header.style.display="none";footer.style.display="none";SetTheme(true);}
+function detectMob(){const toMatch=[/Android/i,/webOS/i,/iPhone/i,/iPad/i,/iPod/i,/BlackBerry/i,/Windows Phone/i];return toMatch.some((toMatchItem)=>{return navigator.userAgent.match(toMatchItem);});}
+var fetchJSON=function(url,callback){const apiToken=$('input#api-token').val();var defaultHeaders=new Headers();defaultHeaders.append('Authorization','Bearer '+apiToken);fetch(url,{method:'GET',cache:'no-cache',headers:defaultHeaders,}).then((response)=>{if(response.status==401){window.location.reload();return;}
+return response.json();}).then((data)=>{callback(null,data);});};var fetchPOSTJSON=function(url,callback){const apiToken=$('input#api-token').val();var defaultHeaders=new Headers();defaultHeaders.append('Authorization','Bearer '+apiToken);fetch(url,{method:'POST',cache:'no-cache',headers:defaultHeaders,}).then((response)=>{if(response.status==401){window.location.reload();return;}
+return response.json();}).then((data)=>{callback(null,data);});};let timers=[];var appHolder=document.querySelector('.appBG');var activeAlertsElement=document.getElementById("alertList");var alertListItem=document.querySelector('.alertListItem');var alertsTitle=document.querySelector('.alertTitle');var alertWindow=document.getElementById('activeAlerts');var itemReginName=document.querySelector('.alertItemName');var itemAlertItem=document.querySelector('.alertIcon');var itemDateItem=document.querySelector('.alertDateHolder');var onlineHolder=document.getElementById('activeUsers');var usersCount=document.querySelector('.online-users-count');var statsBtn=document.querySelector('.statsBtn');var statsBtnTitle=document.querySelector('.statsBtnTitle');var statisticList=document.querySelector('.statsList');var statisticObject=document.querySelector('.statsListItem');var ststsBtn=document.querySelector('.statsBtn');var closeStatsBtn=document.querySelector('.close');var allTimeStatsBtn=document.getElementById('allTimeStatsBtn');var weekStatsBtn=document.getElementById('weekStatsBtn');var todayStatsBtn=document.getElementById('todayStatsBtn');var statsContent=document.querySelector('.statsContent');var collapseBtnAfter=document.querySelector('.collapsible');var header=document.querySelector('.header');var stateAlertsList=document.querySelector('.stateAlertsList');var stateAlertsObject=document.querySelector('.stateAlertsListItem');var closeStateAlertsBtn=document.getElementById('alertsClose');var stateAlertsContent=document.querySelector('.stateAlertsContent');var installAppContainer=document.querySelector('.installApp');var installAppTitle=document.querySelector('.installAppTitle');var installAppDesc=document.querySelector('.installAppDesc');var installAppCloseBtn=document.querySelector('.installAppCloseBtn');var alertsTitleColor=window.getComputedStyle(alertsTitle,null).getPropertyValue('color');var alertWindowColor=window.getComputedStyle(alertWindow,null).getPropertyValue('background-color');var itemReginNameColor=window.getComputedStyle(itemReginName,null).getPropertyValue('color');var itemAlertItemColor=itemAlertItem.style.backgroundColor;var itemAlertItemBorderColor=itemAlertItem.style.borderColor;var itemDateItemColor=window.getComputedStyle(itemDateItem,null).getPropertyValue('color');var onlineHolderColor=window.getComputedStyle(onlineHolder,null).getPropertyValue('background-color');var usersCountColor=window.getComputedStyle(usersCount,null).getPropertyValue('color');var statsBtnColor=window.getComputedStyle(statsBtn,null).getPropertyValue('background-color');var statsBtnTitleColor=window.getComputedStyle(statsBtnTitle,null).getPropertyValue('color');var allTimeStatsBtnColor=window.getComputedStyle(allTimeStatsBtn,null).getPropertyValue('color');var weekStatsBtnColor=window.getComputedStyle(weekStatsBtn,null).getPropertyValue('color');var todayStatsBtnColor=window.getComputedStyle(todayStatsBtn,null).getPropertyValue('color');var mask;function SetTheme(isNight)
+{if(isNight){appHolder.classList.add("appBG_darkMode");alertWindow.style.backgroundColor="#4d4d4d";alertsTitle.style.color="#b3b3b3";var elements=document.getElementsByClassName('alertItemName');Array.prototype.filter.call(elements,function(element){element.style.color="#c2c2c2";});elements=document.getElementsByClassName('alertIcon');Array.prototype.filter.call(elements,function(element){element.style.backgroundColor="#4d4d4d";element.style.borderColor="#f87171";});elements=document.getElementsByClassName('alertDateHolder');Array.prototype.filter.call(elements,function(element){element.style.color="#9ca3af";});onlineHolder.style.backgroundColor="#4d4d4d";usersCount.style.color="#b3b3b3";statsContent.style.backgroundColor="#4d4d4d";statsBtn.style.backgroundColor="#4d4d4d";statsBtnTitle.style.color="#b3b3b3";allTimeStatsBtn.style.color="#b3b3b3";weekStatsBtn.style.color="#b3b3b3";todayStatsBtn.style.color="#b3b3b3";var statsItemName=statisticObject.querySelector('.statsItemName');var statsItemDur=statisticObject.querySelector('.statsItemDuration');var statsItemCount=statisticObject.querySelector('.statsItemCount');statsItemName.style.color="#c2c2c2";statsItemDur.style.color="#c2c2c2";statsItemCount.style.color="#c2c2c2";installAppContainer.style.backgroundImage="linear-gradient(90deg, #322E1B 0%, #161E29 100%)";installAppTitle.style.color="#FFFFFF";installAppDesc.style.color="#9D9D9D";stateAlertsContent.style.backgroundColor="#4d4d4d";stateAlertsObject.style.backgroundColor="#373737";var stateAlertName=stateAlertsObject.querySelector('.stateItemField');var stateAlertItemDate=stateAlertsObject.querySelector('#statsItemDate');var stateAlertDuration=stateAlertsObject.querySelector('#statsItemDuration');var stateAlertType=stateAlertsObject.querySelector('#statsAlertType');stateAlertType.style.color="#c2c2c2";stateAlertName.style.color="#c2c2c2";stateAlertItemDate.style.color="#c2c2c2";stateAlertDuration.style.color="#c2c2c2";collapseBtnAfter.style.color="white";header.style.backgroundColor="#414141";var navItems=document.getElementsByClassName("nav__item");Array.prototype.filter.call(navItems,function(element){element.style.color="#e4e4e4";});var svgMaps=document.getElementsByClassName("svgMap");Array.prototype.filter.call(svgMaps,function(element){element.classList.add("svgMap_darkMode");});var activeAlerts=document.getElementsByClassName("regionAlert");Array.prototype.filter.call(activeAlerts,function(element){if(!element.classList.contains("regionAlert_darkMode"))
+element.classList.add("regionAlert_darkMode");});var activeDistAlerts=document.getElementsByClassName("dist_alarmed");Array.prototype.filter.call(activeDistAlerts,function(element){if(!element.classList.contains("dist_alarmed_darkMode"))
+element.classList.add("dist_alarmed_darkMode");});var activeComAlerts=document.getElementsByClassName("community_alarmed");Array.prototype.filter.call(activeComAlerts,function(element){if(!element.classList.contains("community_alarmed_darkMode"))
+element.classList.add("community_alarmed_darkMode");});setStatesDarkMode(true);}
+else
+{appHolder.classList.remove("appBG_darkMode");alertWindow.style.backgroundColor=alertWindowColor;alertsTitle.style.color=alertsTitleColor;var elements=document.getElementsByClassName('alertItemName');Array.prototype.filter.call(elements,function(element){element.style.color=itemReginNameColor;});elements=document.getElementsByClassName('alertIcon');Array.prototype.filter.call(elements,function(element){element.style.backgroundColor=itemAlertItemColor;element.style.borderColor=itemAlertItemBorderColor;});elements=document.getElementsByClassName('alertDateHolder');Array.prototype.filter.call(elements,function(element){element.style.color=itemDateItemColor;});onlineHolder.style.backgroundColor=onlineHolderColor;usersCount.style.color=usersCountColor;statsBtn.style.backgroundColor=statsBtnColor;statsBtnTitle.style.color=statsBtnTitleColor;statsContent.style.backgroundColor=onlineHolderColor;todayStatsBtn.style.color=todayStatsBtnColor;weekStatsBtn.style.color=weekStatsBtnColor;allTimeStatsBtn.style.color=allTimeStatsBtnColor;installAppContainer.style.backgroundImage="linear-gradient(90deg, #FFF9DF 0%, #E9F2FF 100%)";installAppTitle.style.color="#0F0F0D";installAppDesc.style.color="#636363";var statsItemName=statisticObject.querySelector('.statsItemName');var statsItemDur=statisticObject.querySelector('.statsItemDuration');var statsItemCount=statisticObject.querySelector('.statsItemCount');statsItemName.style.color=itemReginNameColor;statsItemDur.style.color=itemReginNameColor;statsItemCount.style.color=itemReginNameColor;stateAlertsContent.style.backgroundColor="#ffffff";stateAlertsObject.style.backgroundColor="#ededed";var stateAlertName=stateAlertsObject.querySelector('.stateItemField');var stateAlertItemDate=stateAlertsObject.querySelector('#statsItemDate');var stateAlertDuration=stateAlertsObject.querySelector('#statsItemDuration');var stateAlertType=stateAlertsObject.querySelector('#statsAlertType');stateAlertType.style.color="#4b5563";stateAlertName.style.color="#4b5563";stateAlertItemDate.style.color="#4b5563";stateAlertDuration.style.color="#4b5563";collapseBtnAfter.style.color="black";header.style.backgroundColor="#eeeeeeff";var navItems=document.getElementsByClassName("nav__item");Array.prototype.filter.call(navItems,function(element){element.style.color="#000";});var svgMaps=document.getElementsByClassName("svgMap");Array.prototype.filter.call(svgMaps,function(element){element.classList.remove("svgMap_darkMode");});var activeAlerts=document.getElementsByClassName("regionAlert");Array.prototype.filter.call(activeAlerts,function(element){if(element.classList.contains("regionAlert_darkMode"))
+element.classList.remove("regionAlert_darkMode");});var activeDistAlerts=document.getElementsByClassName("dist_alarmed");Array.prototype.filter.call(activeDistAlerts,function(element){if(element.classList.contains("dist_alarmed_darkMode"))
+element.classList.remove("dist_alarmed_darkMode");});var activeComAlerts=document.getElementsByClassName("community_alarmed");Array.prototype.filter.call(activeComAlerts,function(element){if(element.classList.contains("community_alarmed_darkMode"))
+element.classList.remove("community_alarmed_darkMode");});setStatesDarkMode(false);}}
+function setStatesDarkMode(isOn)
+{var states=document.getElementsByClassName("state");Array.prototype.filter.call(states,function(element){if(!element.classList.contains("state_darkMode")&&isOn)
+element.classList.add("state_darkMode");else if(element.classList.contains("state_darkMode")&&!isOn)
+element.classList.remove("state_darkMode");});}
+function SetCollapseState(state)
+{if(state)
+{activeAlertsElement.style.display="none";collapseBtnAfter.classList.remove("active");}
+else
+{activeAlertsElement.style.display="flex";collapseBtnAfter.classList.add("active");}}
+collapseBtnAfter.addEventListener("click",function()
+{var state=false;if(collapseBtnAfter.classList.contains("active"))
+state=true;localStorage.setItem('collapse',state);SetCollapseState(state);});function detectColorScheme(){var theme="light";if(isHideAllMode)
+{document.documentElement.setAttribute("data-theme","dark");return;}
+if(localStorage.getItem("theme")){theme=localStorage.getItem("theme")}
+else{const hours=new Date().getHours()
+const isDayTime=hours>6&&hours<21
+if(!isDayTime)
+theme="dark"}
+document.documentElement.setAttribute("data-theme",theme);}
+function detectCollapseState()
+{var state=false;if(localStorage.getItem("collapse")){state=localStorage.getItem("collapse")==="true"}
+SetCollapseState(state);}
+detectCollapseState();const toggleSwitch=document.getElementById('slider');function switchTheme(e){if(e.target.checked){localStorage.setItem('theme','dark');document.documentElement.setAttribute('data-theme','dark');toggleSwitch.checked=true;SetTheme(true);}else{localStorage.setItem('theme','light');document.documentElement.setAttribute('data-theme','light');toggleSwitch.checked=false;SetTheme(false);}}
+toggleSwitch.addEventListener('change',switchTheme,false);if(document.documentElement.getAttribute("data-theme")=="dark"){toggleSwitch.checked=true;}
+SetTheme(document.documentElement.getAttribute("data-theme")=="dark");ststsBtn.onclick=function(){StatsShow();GetStatisticAllTime();};closeStatsBtn.onclick=function(){StatsHide();};allTimeStatsBtn.onclick=function(){GetStatisticAllTime();};weekStatsBtn.onclick=function(){GetStatisticWeek();};todayStatsBtn.onclick=function(){GetStatisticToday();};function HideInstallApp()
+{installAppContainer.style.display="none";}
+var lastActionIndex=-1;function ReloadWindow()
+{window.location.reload();}
+async function OnTimerTicked(){fetchJSON('/api/data/getLastActionIndex',function(err,data)
+{if(err==null)
+{if(data.lastActionIndex>lastActionIndex)
+{lastActionIndex=data.lastActionIndex;ParseAlerts();ParseArtillery();}}});}
+function ParseAlerts()
+{fetchJSON('/api/data/getAlerts',function(err,data)
+{if(err==null){ParseAlertsData(data);}});}
+function ParseAlertsData(data)
+{activeAlerts=[];if(data==null||data.length==0)
+{StopAllTimers();SetClearAlerts();}
+else if(data.length>0)
+{StopAllTimers();SetAlerts(data);}
+if(document.getElementById('finished')==null){var newDiv=document.createElement("div");newDiv.id="finished";document.body.appendChild(newDiv);}}
+function ParseArtilleryData(data)
+{for(var i=0;i<data.length;i++)
+{SetArtillery(data[i]);}}
+function ParseArtillery()
+{fetchJSON('/api/data/getArtillery',function(err,data){if(err==null)
+{ParseArtilleryData(data);}});}
+function SetArtillery(item)
+{var regions=document.querySelectorAll(`[artilleryRegionId="${item.regionId}"]`);if(regions.length>0)
+return;fetch("artillery.svg").then(r=>r.text()).then(text=>{AddArtilleryMarkerToMap(item,text);});}
+function AddArtilleryMarkerToMap(item,svgText)
+{var alertListItem=document.querySelector('.svgMapHolder');var parser=new DOMParser();var doc=parser.parseFromString(svgText,"image/svg+xml");var element=doc.documentElement;element.setAttribute("artilleryRegionId",item.regionId);element.classList.add("artilleryIcon")
+if(IsDarkMode())
+{element.classList.add("artilleryIcon_darkMode")}
+alertListItem.appendChild(element);let date=new Date(Date.parse(item.createdDate));var regionText=document.querySelector(`[textId="${item.regionId}"]`);if(regionText!=null)
+{var x=parseFloat(regionText.getAttribute("x"))+4;var y=regionText.getAttribute("y")-10.5;var g=element.querySelector("#gHolder");g.setAttribute("transform","translate("+x+","+y+")")
+var theme="light";if(IsDarkMode())
+theme="";tippy(g,{theme:theme,content:`<div class="artilleryTooltip"><b>ЗМІ повідомляють про вибухи</b><br>`+date.toLocaleString()+"</div>",allowHTML:true,hideOnClick:true,trigger:'mouseenter click',});}
+var timer=setInterval(SetTimer,1000);SetTimer();function SetTimer(){var now=Date.now();var distance=now-date;var minutes=distance/1000/60;if(minutes>30)
+{clearInterval(timer);element.remove();}}}
+let updateMapCallback=function UpdateMapFromSignalR(data)
+{var alerts=JSON.parse(data.alerts);var artillery=JSON.parse(data.artillery);activeAlerts=[];if(alerts==null||alerts.length==0)
+{StopAllTimers();SetClearAlerts();}
+else if(alerts.length>0)
+{StopAllTimers();SetAlerts(alerts);}
+for(var i=0;i<artillery.length;i++)
+{SetArtillery(artillery[i]);}
+if(document.getElementById('finished')==null){var newDiv=document.createElement("div");newDiv.id="finished";document.body.appendChild(newDiv);}}
+function SetClearAlerts()
+{DeleteAllAlerts();SetAlertsTitle("Зараз немає тривог");CheckActiveAlerts();}
+function SetAlerts(data)
+{DeleteAllAlerts();SetAlertsTitle("Зараз тривога лунає в:")
+data.forEach(SetAlert);CheckActiveAlerts();}
+function SetAlert(region)
+{AddAlert(region.regionId);let date=new Date(Date.parse(region.lastUpdate));var today=new Date();var isToday=(today.toDateString()==date.toDateString());var startHours=date.getHours();if(startHours<10)
+startHours="0"+startHours;var startMinutes=date.getMinutes();if(startMinutes<10)
+startMinutes="0"+startMinutes;var startDate="";if(!isToday)
+{var startDay=date.getDate();if(startDay<10)
+startDay="0"+startDay;var startMonth=date.getMonth()+1;if(startMonth<10)
+startMonth="0"+startMonth;startDate=startDay+"."+startMonth;}
+else
+{startDate="сьогодні";}
+var item=alertListItem.cloneNode(true);var airIcon=item.querySelector(".airIcon");var artileryIcon=item.querySelector(".artileryIcon");airIcon.style.display=region.activeAlerts[0].type==="AIR"?"":"none";artileryIcon.style.display=region.activeAlerts[0].type==="ARTILLERY"?"":"none";item.style.removeProperty("display");var regionNameItem=item.querySelector(".alertItemName");regionNameItem.innerHTML=region.regionName;var alertDateSpan=item.querySelector("#alertDateSpan");alertDateSpan.innerHTML='оголошено '+startDate+' в <b>'+startHours+':'+startMinutes+'</b>';activeAlertsElement.appendChild(item);var alertTimerSpan=item.querySelector("#alertTimerSpan");var timer=setInterval(SetTimer,1000);SetTimer();function SetTimer(){var now=Date.now();var distance=now-date;var days=Math.floor(distance/(1000*60*60*24));var hours=Math.floor((distance%(1000*60*60*24))/(1000*60*60));var minutes=Math.floor((distance%(1000*60*60))/(1000*60));var endText="";if(days>0)
+{endText+=days+"д. ";}
+if(hours>0)
+{endText+=hours+"год. ";}
+if(minutes>0)
+{endText+=minutes+"хв. ";}
+if(days<=0&&hours<=0&&minutes<=0)
+endText="менше хвилини";alertTimerSpan.innerHTML="триває <i>"+endText+"</i>";}
+timers.push(timer);if(region.activeAlerts[0].type=="INFO")
+{var regions=document.querySelectorAll(`[id="${region.regionId}"]`);for(var i=0;i<regions.length;i++)
+{if(!regions[i].classList.contains("regionInfo"))
+regions[i].classList.add("regionInfo");if(IsDarkMode())
+{if(!regions[i].classList.contains("regionInfo_darkMode"))
+regions[i].classList.add("regionInfo_darkMode");}}}}
+function SetAlertsTitle(title)
+{alertsTitle.innerHTML=title;}
+function DeleteAllAlerts()
+{var child=activeAlertsElement.lastElementChild;while(child){activeAlertsElement.removeChild(child);child=activeAlertsElement.lastElementChild;}}
+function StopAllTimers()
+{while(timers.length>0)
+{var timer=timers.shift();clearInterval(timer);}}
+closeStateAlertsBtn.onclick=function(){StateAlertsHide();};function ShowStateHistory(id)
+{SetClearStatesAlerts();StateAlertsShow();fetchJSON('/api/data/getStatesHistory',function(err,data)
+{data.forEach((holder)=>{if(holder.regionId===id)
+{curStateAlertRegionName=holder.regionName;for(var i=holder.alarms.length-1;i>=0;i--){PlaceStateAlert(holder.alarms[i])}}});});}
+function SetClearStatesAlerts()
+{var child=stateAlertsList.lastElementChild;while(child){stateAlertsList.removeChild(child);child=stateAlertsList.lastElementChild;}}
+const monthNames=["січня","лютого","березня","квітня","травня","червня","липня","серпня","вересня","жовтня","листопада","грудня"];var curStateAlertRegionName="";function PlaceStateAlert(region)
+{const isToday=(someDate)=>{const today=new Date()
+return someDate.getDate()==today.getDate()&&someDate.getMonth()==today.getMonth()&&someDate.getFullYear()==today.getFullYear()}
+var item=stateAlertsObject.cloneNode(true);item.style.removeProperty("display");var regionNameItem=item.querySelector(".stateItemField");if(region.isContinue)
+regionNameItem.innerHTML="<span><b>"+region.regionName+"</b></span>";else
+regionNameItem.innerHTML="<b>"+region.regionName+"</b>";var startDate=new Date(region.startDate);var endDate=new Date(region.endDate);var startDay=startDate.getDate();var endDay=endDate.getDate();var startHours=startDate.getHours();var startMinutes=startDate.getMinutes();var endHours=endDate.getHours();var endMinutes=endDate.getMinutes();if(startHours<10)
+startHours="0"+startHours;if(startMinutes<10)
+startMinutes="0"+startMinutes;if(endHours<10)
+endHours="0"+endHours;if(endMinutes<10){endMinutes="0"+endMinutes;}
+var startDateStr=startDay+" "+monthNames[startDate.getMonth()]+" "+startHours+":"+startMinutes;var endDateStr=" - ";if(isToday(startDate))
+{startDateStr="Сьогодні, "+startHours+":"+startMinutes;}
+if(region.isContinue)
+{endDateStr+="<span>триває</span>";}else{if(startDay===endDay)
+endDateStr+=endHours+":"+endMinutes;else
+endDateStr+=endDay+" "+monthNames[endDate.getMonth()]+" "+endHours+":"+endMinutes;}
+var date=startDateStr+endDateStr;var alertDate=item.querySelector("#statsItemDate");alertDate.innerHTML=date;var duration=dateDiff(endDate-startDate);if(region.isContinue)
+{duration=dateDiff(new Date()-startDate);}
+var durHours=duration.h;var durMinutes=duration.m;var durDays=duration.d;var durationStr="";if(durDays>0)
+{if(durDays<10)
+durationStr+="0"+durDays+" д. "
+else
+durationStr+=durDays+" д. "}
+if(durHours>0)
+{if(durHours<10)
+durationStr+="0"+durHours+" год. "
+else
+durationStr+=durHours+" год. "}
+if(durMinutes>0)
+{if(durMinutes<10)
+durationStr+="0"+durMinutes+" хв. "
+else
+durationStr+=durMinutes+" хв. "}
+var alertDuration=item.querySelector("#statsItemDuration");alertDuration.innerHTML=durationStr;if(region.alertType!="AIR")
+{var alertType="";if(region.alertType=="ARTILLERY")
+{alertType="Загроза артобстрілу";}
+else if(region.alertType=="INFO")
+{alertType="Слідкуйте за повідомленнями";}
+var alertTypeField=item.querySelector("#statsAlertType");alertTypeField.innerHTML="<i>"+alertType+"</i>";}
+function dateDiff(diff){return isNaN(diff)?NaN:{diff:diff,ms:Math.floor(diff%1000),s:Math.floor(diff/1000%60),m:Math.floor(diff/60000%60),h:Math.floor(diff/3600000%24),d:Math.floor(diff/86400000)};}
+stateAlertsList.appendChild(item);}
+function GetStatisticAllTime()
+{fetchJSON('/api/data/getHistory',function(err,data)
+{SetClearStats();data.totalDurations.forEach(PlaceStatistic);});}
+function GetStatisticWeek()
+{fetchJSON('/api/data/getHistory',function(err,data)
+{SetClearStats();data.weekDurations.forEach(PlaceStatistic);});}
+function GetStatisticToday()
+{fetchJSON('/api/data/getHistory',function(err,data)
+{SetClearStats();data.todayDurations.forEach(PlaceStatistic);});}
+function SetClearStats()
+{var child=statisticList.lastElementChild;while(child){statisticList.removeChild(child);child=statisticList.lastElementChild;}}
+function PlaceStatistic(region)
+{var item=statisticObject.cloneNode(true);var regionNameItem=item.querySelector(".statsItemName");if(region.isContinue==true)
+{regionNameItem.innerHTML="";regionNameItem.innerHTML+="<span>"+region.regionName+"</span>";}
+else
+regionNameItem.innerHTML=region.regionName;var regionDuration=item.querySelector(".statsItemDuration");regionDuration.innerHTML=region.durationVal;var regionAlertsCount=item.querySelector(".statsItemCount");regionAlertsCount.innerHTML=region.alertsCount;var percentageObject=item.querySelector(".statsItemTimeValue");var spaceObject=item.querySelector(".statsItemSpace");percentageObject.style.removeProperty("display");percentageObject.style.width=region.percentage+"%";spaceObject.style.removeProperty("display");statisticList.appendChild(item);}

@@ -1,0 +1,13 @@
+/*!
+* Copyright © 2021 Ken Haggerty (https://kenhaggerty.com)
+* Licensed under the MIT License.
+* SignalR Online User Count - Version 1.0.1
+* Depends on signalr.js
+*/let onlineCount=document.querySelector('.online-users-count');let updateCountCallback=function(message){if(!message)return;if(onlineCount)onlineCount.innerText=message;};function onConnectionError(error){if(error&&error.message){console.error(error.message);}}
+function SignalRConnect(){let countConnection=new signalR.HubConnectionBuilder().withUrl('/onlinecount',{skipNegotiation:true,transport:signalR.HttpTransportType.WebSockets}).withAutomaticReconnect().build();countConnection.on('updateCount',updateCountCallback);if(!isRequestsMode){countConnection.on('updateMap',updateMapCallback);}
+countConnection.onclose(onConnectionError);var isOnIOS=navigator.userAgent.match(/iPad/i)||navigator.userAgent.match(/iPhone/i);var eventName=isOnIOS?"pagehide":"beforeunload";window.addEventListener(eventName,function(e)
+{countConnection.stop();});countConnection.start();window.addEventListener("visibilitychange",function(e)
+{if(document.visibilityState!='visible')
+{countConnection.stop();}
+else
+{countConnection.start();}});}

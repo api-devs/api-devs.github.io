@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>&#x41E;&#x444;&#x456;&#x446;&#x456;&#x439;&#x43D;&#x430; &#x43A;&#x430;&#x440;&#x442;&#x430; &#x43F;&#x43E;&#x432;&#x456;&#x442;&#x440;&#x44F;&#x43D;&#x438;&#x445; &#x442;&#x440;&#x438;&#x432;&#x43E;&#x433; &#x423;&#x43A;&#x440;&#x430;&#x457;&#x43D;&#x438;</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Карта повітряних тривог України: актуальна інформація про повітряні тривоги на мапі України.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico@v=rmkDGTrhmS6ik1j9I3SPiPCJAoEP0lDdvKkf9YX1m_s" />
+    <link rel="stylesheet" type="text/css" href="css/svgMap.css@v=0TZTkGayTsA5QvLXg2G_oBqD6ZftdBTvt04T02aAJYs.css">
+    <link rel="stylesheet" type="text/css" href="css/stfalcon.css@v=8HfKuIcsVG0TJN_L9Ll-I5XWlYr2_bJNuzA79OQrOg4.css">
+    <link rel="stylesheet" type="text/css" href="css/stfalcon_landing.css@v=wViFRrObrsKXujgM3rPJE5bF1_SNATZHBHIYiBSZMS8.css">
+    <link rel="stylesheet" type="text/css" href="css/tippy.light.css@v=ye9FRhX7tDhiztwCD1Lq6j1tqz_Qxn1wuWxqqThZOrg.css">
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+
+
+
+        <link rel="stylesheet" type="text/css" href="css/styles.css@v=okmUH5wuxkmJnWrKsXUUh0KOMU7suz87sRo7yMhjYSE.css">
+        <link rel="stylesheet" href="css/map_standalone.css@v=39orwRTQ-89TWMBZyco9Eh_eKFe3MyFR8Z42z1uyspo.css" />
+    <!--===============================================================================================-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/centrifugal/centrifuge-js@2.8.5/dist/centrifuge.min.js"></script>
+    <h1 style='display: none;'>Актуальна карта повітряних тривог України</h1>
+</head>
+<body onload="hideAll()">
+<div class="wrapper">
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a data-testid="linkElement" data-anchor="dataItem-l0iinxen" href="https://www.ukrainealarm.com" class="xQ_iF">
+                    <wix-image id="img_comp-l0iigr2y" class="_1-6YJ _1Fe8-" data-image-info="{&quot;containerId&quot;:&quot;comp-l0iigr2y&quot;,&quot;displayMode&quot;:&quot;fill&quot;,&quot;imageData&quot;:{&quot;width&quot;:172,&quot;height&quot;:172,&quot;uri&quot;:&quot;1420a6_5dcdcf9b9fad4d8495119b6f47c92bdc~mv2.png&quot;,&quot;name&quot;:&quot;Mask group.png&quot;,&quot;displayMode&quot;:&quot;fill&quot;}}" data-bg-effect-name="" data-is-svg="false" data-is-svg-mask="false" data-image-zoomed="" data-has-ssr-src="" data-src="https://static.wixstatic.com/media/1420a6_5dcdcf9b9fad4d8495119b6f47c92bdc~mv2.png/v1/fill/w_54,h_55,al_c,usm_0.66_1.00_0.01,enc_auto/Mask%20group.png"><img src="https://static.wixstatic.com/media/1420a6_5dcdcf9b9fad4d8495119b6f47c92bdc~mv2.png/v1/fill/w_54,h_55,al_c,usm_0.66_1.00_0.01,enc_auto/Mask%20group.png" alt="Mask group.png" style="width:54px;height:55px;object-fit:cover;object-position:50% 50%"></wix-image>
+                </a>
+            </div>
+            <div class="nav">
+                <div class="nav__item">
+                    <a href="https://www.ukrainealarm.com" target="_self" class="nav__item" aria-label="Як користуватись">
+                        Як користуватись
+                    </a>
+                </div>
+                <div class="nav__item" style="margin-right: 0;">
+                    <a href="https://www.ukrainealarm.com" target="_self" class="nav__item" aria-label="Сповіщення">
+                        Сповіщення
+                    </a>
+                </div>
+                <div class="nav__item">
+                    <a href="https://www.ukrainealarm.com/faq" target="_self" class="nav__item" aria-label="Питання">
+                        Питання
+                    </a>
+                </div>
+                <div class="nav__item" style="margin-right: 0;">
+                    <a href="https://www.ukrainealarm.com" target="_self" class="nav__item" aria-label="Контакти">
+                        Контакти
+                    </a>
+                </div>
+                <div class="nav__item">
+                    <a href="https://api.ukrainealarm.com" target="_self" class="nav__item" aria-label="Для розробників (АПІ)">
+                        Для розробників (АПІ)
+                    </a>
+                </div>
+                <div class="nav__item" style="margin-right: 0;">
+                    <a href="index.html" target="_self" class="nav__item" aria-label="Мапа">
+                        Мапа
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        
+<audio id="updateSound" src="sounds/updateMapSound.wav"></audio>
+<input id="api-token" type="hidden" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2NzA0NjE1ODUsImV4cCI6MTY3MDQ2NTE4NSwiaXNzIjoidWtyYWluZS1hbGFybS1tYXAiLCJhdWQiOiJ1a3JhaW5lLWFsYXJtLW1hcCJ9.rScfZF0YGQVCwgjac8Wa8IXuV89KronkXuZsBs6EFhE"/>
+<input id="centrifugo-token" type="hidden" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNzcxNzQxOTc0IiwibmJmIjoxNjcwNDYxNTg1LCJleHAiOjE2NzA0Njg3ODUsImlhdCI6MTY3MDQ2MTU4NX0.HomDoH1L6e_HX3L_z1AfNHwyBquXInqO83MKeKBl9NA"/>
+<input id="centrifugo-url" type="hidden" value="wss://ws.ukrainealarm.com/connection/websocket"/>
+<div class="appHolder">
+    <div class="appBG"></div>
+    <div class="svgMapHolder">
+
+    </div>
+
+    <div id="activeUsers" class="onlineHolder">
+        <div class="online-users-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="h-6 w-6"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+
+        <div class="online-users-count"></div>
+    </div>
+    <div id="installApp" class="installApp">
+        <img src="images/eRaketa_Logo.png" style="border-radius: 6px; width: 44px; height: 44px" />
+        <div style="display: flex; flex-direction: column">
+            <label class="installAppTitle">Встановіть застосунок єРакета</label>
+            <label class="installAppDesc">Щоб миттєво сповіщувати системи протиповітряної оборони щодо прольоту ракет</label>
+        </div>
+        <a href="https://eraketa.com/"><button class="installAppButton">Встановити</button></a>
+        <div class="installAppCloseBtn" onclick="HideInstallApp()">
+            <img src="images/Union.png" style="display: block;
+                                                   margin-left: auto;
+                                                   margin-right: auto;" />
+        </div>
+    </div>
+
+    <div id="activeAlerts" class="alertsHolder">
+
+        <!-- List Item -->
+        <div class="alertListItem" style="display: none;">
+            <div class="alertIcon">
+                <svg class="h-4 w-4 animatedSVG airIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.89 111.55"><defs><style>.cls-1{fill:#b71616;}.cls-2{fill:#e21b1b;fill-rule:evenodd;}.cls-3{fill:#fff;}</style></defs><title>red-alert</title><path class="cls-1" d="M2.35,84.43,45.29,10.2l.17-.27h0a22.92,22.92,0,0,1,7-7.23A17,17,0,0,1,61.58,0a16.78,16.78,0,0,1,9.11,2.69,22.79,22.79,0,0,1,7,7.26c.13.21.25.42.36.64l42.24,73.34.23.44h0a22.22,22.22,0,0,1,2.37,10.19,17.59,17.59,0,0,1-2.16,8.35,16,16,0,0,1-6.94,6.61l-.58.26a21.34,21.34,0,0,1-9.11,1.74v0H17.62c-.23,0-.44,0-.66,0a18.07,18.07,0,0,1-6.2-1.15A16.46,16.46,0,0,1,3,104.26a17.59,17.59,0,0,1-3-9.58,23,23,0,0,1,1.57-8.74,8.24,8.24,0,0,1,.77-1.51Z"/><path class="cls-2" d="M9,88.76l43.15-74.6c5.23-8.25,13.53-8.46,18.87,0l42.44,73.7c3.38,6.81,1.7,16-9.34,15.77H17.62c-7.27.18-12-6.19-8.64-14.87Z"/><path class="cls-3" d="M57.57,82.7a5.51,5.51,0,0,1,3.48-1.58,5.75,5.75,0,0,1,2.4.35,5.82,5.82,0,0,1,2,1.31,5.53,5.53,0,0,1,1.62,3.55,6.05,6.05,0,0,1-.08,1.4,5.54,5.54,0,0,1-5.64,4.6,5.67,5.67,0,0,1-2.27-.52,5.56,5.56,0,0,1-2.82-2.94,5.65,5.65,0,0,1-.35-1.27,5.83,5.83,0,0,1-.06-1.31h0a6.19,6.19,0,0,1,.57-2,4.57,4.57,0,0,1,1.13-1.56Zm8.16-10.24c-.2,4.79-8.31,4.8-8.5,0-.82-8.21-2.92-29.39-2.85-37.1.07-2.38,2-3.79,4.56-4.33a12.83,12.83,0,0,1,5,0c2.61.56,4.65,2,4.65,4.44v.24L65.73,72.46Z"/></svg>
+                <img class="h-4 w-4 animatedSVG artileryIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAExUlEQVRogdWZW2wUVRjHf9/s9LKkBC1a6NKWVsRoSEwQA0Iv2Roj9AZF05j4AomaGEUSifpADCHGEBM1EJ54ITHhQR4Ml9ILRaGLtjYkJEoMRJRYbMvuarQY5FLYmfl8aItL272V3Z3ln8zDnPM/X77ffGcu54zwgCrU6q/EjmxD5RWE86bbCaWq4bWri818z3YsawtIAQDKnQcG5NeGhoIi89o7qGxHefjeXv1S3EkrNYWaqusR2Qc8Ma1TiKjtLM3pioxsXDnfcyfvM0Q2ATEuuu7zdX3/e86CBJtq1xoR3a/ColgegX8c8j4CyDmQ823L8otvFX8O+rbGrMK4FNnlOxb4C3IMZNDvL/TetL5R0eok7Bev20V7J0+MDOaVsqoCgTEH/QrQBFYVMd5a2t19e7IhJyoSavVXasT68PYNc4uvM7An2FSNiOyOM+SLhce+PRXd4HpFQq3+SiKRXhFeK5xrHR70+wt9nf17VPXdGEOCVsR+b2qjqyDBlpoKLOskIpUAKOu8RfbR4bbV3iiY6GmmoG+U9wyMTo3lGkiwcc1icfQ08Fh0u6IvmmOeQ1GV2fZ/H3tLO/q7ZornCkiwpaZCDOPU3UpM1YyVkYGr3qsfxIqZ9U+UYOOaxWIYvUBVQrNwfOxfc2NVIDA26PcXVgUCY7GtWVRKEBNSZb+vs+/1RL6sTa0rG+rKxTBOkQIEMOSBXckYswJyZUNdueE4vUy5sRNoyFDqF3T2/ZaMOeNT6y6EsiSFYSlBQIZBsgUBGQTJJgRkCCTbEJABEDcgIM0gbkFAGkHchIA0gbgNAWkAyQUIuM83+0iDvywXIOA+QEYa/GUej50TEDDLqXUXAn08hWEZg4BZgOQiBMywizLY6n/Ia1mbHNESlGHDkR9u3TTPTS5qTI/9iaYCoXqZvLz6BUcCl9OY9zTdU5E/m+uW2jgdTN8svq7o+76O/n2h5tqVoGeSij4BUZphCIi62cMb15TYOD3MtOMNRYJ8CjDqHf0xqchZhIAJkGDLijlqGe3EX71dBJh3/dGShFGzDAFg6E4MwXsAZVUcX9h2eBXAMK1NcSO6AAFghs/W7ABeiuMJq9j1ZV0Dv4Saa1eiuiOm0yUIGJ9aW+P0h1Xset+xgZ+DLbXPgHYD+cBVFX3TNHSR5bXnINqIcNwtCABTlAsqTN/GF0KK/fwkhKh+DRQDI46hLyxq778Y5e6eOFyTeSvPbC607a2gjSjLGb/iJ23L3FzW3TcyFcJj2PWl7QOXrqyvW244zgGgQlU3+zr7D7kJcs97RFesyBt5JH/u5CZxsKm6VkSOEAVR0j5wKdxYs0o99KDMmxg6uLCjb4kk/q+RMcX8RNGdGOGzNf3Ac8SHGJdHlpUe/e5ChvONqZhfv7ITx4rYTUCfAc1xIQC1tCajmSZQ3D9W5T0Dowp1AvrH+tqnHdUZIQAMqMhMiskp4XpEQLWtzeM4ejAWBIADQ+lNLTUltbAKjwWfBJ6KYxkucCIH05PS7JQUiMfO+5vYT6QhPLJufveZa+lLK3UlBVLSFQgDP01tVzhn22a1m0+rSaWyZj8cfSJwxLgzp7qsOzCS5pxmpaRBCsYKdyP0AtcEPl7wbN/LC0+cuJHB3FLSf/5RVVXtQNlLAAAAAElFTkSuQmCC">
+            </div>
+            <div class="alertItemNameHolder">
+                <div class="alertItemName"></div>
+                <div class="alertDateHolder"><span id="alertDateSpan">оголошено в <b>23:01</b></span><span id="alertTimerSpan" style="margin-left: 5px;"></span></div>
+            </div>
+        </div>
+        <!-- End Item -->
+        
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <div class="alertTitle"></div>
+            <button type="button" class="collapsible active"></button>
+        </div>
+        <div class="amo-modal-body">
+            <div id="alertList" class="alertList">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="statsBtn" class="statsBtn">
+        <div class="statsBtnTitle">Статистика</div>
+    </div>
+
+    <label id="switch" class="switch">
+        <input type="checkbox" id="slider">
+        <span class="slider round"></span>
+    </label>
+    
+    <div id="statistics" class="statsHolder" style="display: none">
+        <div class="statsContent">
+            <div class="statsTop">
+                <div class="statsHeader">
+                    <div class="statsHeaderItem" style="cursor: pointer;" id="allTimeStatsBtn">За увесь час</div>
+                    <div class="statsHeaderItem" style="cursor: pointer;" id="weekStatsBtn">За 7 днів</div>
+                    <div class="statsHeaderItem" style="cursor: pointer;" id="todayStatsBtn">Сьогодні</div>
+                </div>
+                <div class="close"></div>
+            </div>
+            <div class="statsListItem">
+                <div class="statsItemNameHolder">
+                    <div class="statsItemName">Назва області</div>
+                    <div class="statsItemDuration">Тривалість</div>
+                    <div class="statsItemCount">Кількість</div>
+                </div>
+                <div class="statsItemTimeValue" style="width: 93%; display: none"></div>
+                <div class="statsItemSpace" style="width: 100%; display: none"></div>
+            </div>
+            <div class="statsList">
+
+            </div>
+        </div>
+    </div>
+    
+    
+        <div id="stateAlertsStatistic" class="stateAlertsHolder" style="display: none">
+            <div class="stateAlertsContent">
+                <div class="alertsHistoryTop">
+                    <div class="close" id="alertsClose"></div>
+                </div>
+                <div class="stateAlertsListItem" style="display: none">
+                    <div class="statsItemNameHolder">
+                        <div class="stateItemField"><b>Хмельницька область</b></div>
+                    </div>
+                    <div class="statsItemNameHolder">
+                        <div class="stateItemField stateItemSmallField" id="statsAlertType"></div>
+                    </div>
+                    <div class="statsItemNameHolder">
+                        <div class="stateItemField" id="statsItemDate">27 червня 01:27 - 03:54</div>
+                    </div>
+                    <div class="statsItemNameHolder">
+                        <div class="stateItemField" id="statsItemDuration">43 хвилини</div>
+                    </div>
+                    
+                </div>
+                
+                
+                <div class="stateAlertsList">
+        
+                </div>
+            </div>
+        </div>
+    
+</div>
+
+<script src="js/popper.min.js"></script>
+<script src="js/tippy.js"></script>
+<script src="js/mapUpdater.js@v=pZ2-jbblI8U3MwfB6wo9oWVv41v4B9hu6J58zFWMnCA"></script>
+<script type="text/javascript" src="js/mapCore.js@v=zi7knA6TvnUKeZ6gjr348QeICfX53MbcTPKXLy_HPPQ"></script>
+<script src="js/onlinecount.js@v=LdV47vcI0pAThu4eTbbYfYJptKnvVDLxEveu-fFZ6Lw"></script>
+<script>
+    $(document).ready(function(){
+        StatsHide();
+    });
+
+    function StatsShow(){
+        $("#statistics").show();
+    }
+
+    function StatsHide(){
+        $("#statistics").hide();
+    }
+</script>
+
+<script>
+    $(document).ready(function(){
+        StatsHide();
+    });
+
+    function StateAlertsShow(){
+        $("#stateAlertsStatistic").show();
+    }
+
+    function StateAlertsHide(){
+        $("#stateAlertsStatistic").hide();
+    }
+</script>
+
+
+
+    </div>
+</div>
+
+<footer class="footer" id="mapFooter">
+    <div class="footer__top">
+        <div class="container">
+            <p class="font_7" style="font-size:44px; line-height:normal; text-align:center;"><span style="font-family:wfont_7ac4bc_0c51fda5f0554dc0a1f6a572fa5b4b51,wf_0c51fda5f0554dc0a1f6a572f,orig_eukraine_head_medium;"><span class="color_15"><span style="font-size:44px;"><span style="color: #FFFFFF; letter-spacing:normal;">Слава Україні!</span></span></span></span></p>
+        </div>
+    </div>
+    <div class="footer__bottom">
+        <div class="container">
+            <div class="footer__item">
+                <a href="https://thedigital.gov.ua/" target="_blank" rel="noreferrer noopener" class="footer__link">
+                    <wix-image id="img_comp-l0b954p2" class="_1-6YJ _1Fe8-" data-image-info="{&quot;containerId&quot;:&quot;comp-l0b954p2&quot;,&quot;displayMode&quot;:&quot;fill&quot;,&quot;imageData&quot;:{&quot;width&quot;:600,&quot;height&quot;:131,&quot;uri&quot;:&quot;1420a6_5db70b4894e84641a815c993739338c2~mv2.png&quot;,&quot;name&quot;:&quot;1200px-Логотип_Міністерства_цифрової_трансформації_України copy.png&quot;,&quot;displayMode&quot;:&quot;fill&quot;}}" data-bg-effect-name="" data-is-svg="false" data-is-svg-mask="false" data-image-zoomed="" data-has-ssr-src="" data-src="https://static.wixstatic.com/media/1420a6_5db70b4894e84641a815c993739338c2~mv2.png/v1/fill/w_183,h_40,al_c,usm_0.66_1.00_0.01,enc_auto/1200px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_%D0%9C%D1%96%D0%BD%D1%96%D1%81%D1%82%D0%B5%D1%80%D1%81%D1%82%D0%B2%D0%B0_%D1%86%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%BE%D1%97_%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D1%96%D1%97_%D0%A3%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D0%B8%20copy.png"><img src="https://static.wixstatic.com/media/1420a6_5db70b4894e84641a815c993739338c2~mv2.png/v1/fill/w_183,h_40,al_c,usm_0.66_1.00_0.01,enc_auto/1200px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_%D0%9C%D1%96%D0%BD%D1%96%D1%81%D1%82%D0%B5%D1%80%D1%81%D1%82%D0%B2%D0%B0_%D1%86%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%BE%D1%97_%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D1%96%D1%97_%D0%A3%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D0%B8%20copy.png" alt="1200px-Логотип_Міністерства_цифрової_трансформації_України copy.png" style="width:183px;height:40px;object-fit:cover;object-position:50% 50%"></wix-image>
+                </a>
+            </div>
+            <div class="footer__item">
+                <a href="https://ajax.systems/software/" target="_blank" rel="noreferrer noopener" class="footer__link">
+                    <wix-image id="img_comp-l0b954pb" class="_1-6YJ _1Fe8-" data-image-info="{&quot;containerId&quot;:&quot;comp-l0b954pb&quot;,&quot;displayMode&quot;:&quot;fill&quot;,&quot;imageData&quot;:{&quot;width&quot;:167,&quot;height&quot;:34,&quot;uri&quot;:&quot;1420a6_697548c46d9e4325a1f144b727e75384~mv2.png&quot;,&quot;name&quot;:&quot;Vector.png&quot;,&quot;displayMode&quot;:&quot;fill&quot;}}" data-bg-effect-name="" data-is-svg="false" data-is-svg-mask="false" data-image-zoomed="" data-has-ssr-src="" data-src="https://static.wixstatic.com/media/1420a6_697548c46d9e4325a1f144b727e75384~mv2.png/v1/fill/w_94,h_19,al_c,usm_0.66_1.00_0.01,enc_auto/Vector.png"><img src="https://static.wixstatic.com/media/1420a6_697548c46d9e4325a1f144b727e75384~mv2.png/v1/fill/w_94,h_19,al_c,usm_0.66_1.00_0.01,enc_auto/Vector.png" alt="Vector.png" style="width:94px;height:19px;object-fit:cover;object-position:50% 50%"></wix-image>
+                </a>
+            </div>
+            <div class="footer__item">
+                <a href="https://stfalcon.com/uk" target="_blank" rel="noreferrer noopener" class="footer__link">
+                    <wix-image id="img_comp-l0b954p9" class="_1-6YJ _1Fe8-" data-image-info="{&quot;containerId&quot;:&quot;comp-l0b954p9&quot;,&quot;displayMode&quot;:&quot;fill&quot;,&quot;imageData&quot;:{&quot;width&quot;:213,&quot;height&quot;:46,&quot;uri&quot;:&quot;1420a6_b1f93c7aff854aae90f76a74e742d121~mv2.png&quot;,&quot;name&quot;:&quot;Logo.png&quot;,&quot;displayMode&quot;:&quot;fill&quot;}}" data-bg-effect-name="" data-is-svg="false" data-is-svg-mask="false" data-image-zoomed="" data-has-ssr-src="" data-src="https://static.wixstatic.com/media/1420a6_b1f93c7aff854aae90f76a74e742d121~mv2.png/v1/fill/w_121,h_26,al_c,usm_0.66_1.00_0.01,enc_auto/Logo.png"><img src="https://static.wixstatic.com/media/1420a6_b1f93c7aff854aae90f76a74e742d121~mv2.png/v1/fill/w_121,h_26,al_c,usm_0.66_1.00_0.01,enc_auto/Logo.png" alt="Logo.png" style="width:121px;height:26px;object-fit:cover;object-position:50% 50%"></wix-image>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+</body>
+</html>
