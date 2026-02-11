@@ -33,11 +33,11 @@ export function Dashboard() {
       >
         <h1 className="text-4xl font-bold text-[#F4F6FF] mb-3">
           The API.DEVS platform for{' '}
-          <span className="gradient-text">modern developers and information security experts</span>
+                  <span className="gradient-text">modern developers and information security experts</span>
         </h1>
         <p className="text-lg text-[#A6B1C9] max-w-2xl">
           Discover, test, and integrate production-ready APIs—fast. 
-          Build smarter with our comprehensive suite of developer tools.
+          Build smarter with our comprehensive suite of tools.
         </p>
       </div>
       
@@ -87,11 +87,10 @@ export function Dashboard() {
             </div>
             
             <h2 className="text-2xl font-bold text-[#F4F6FF] mb-3">
-              Image Processing API
+              Projects API
             </h2>
             <p className="text-[#A6B1C9] mb-6 max-w-lg">
-              Resize, crop, compress, and convert images on demand. 
-              Built-in caching, global CDN, and smart format negotiation.
+                          In the process of updating and finalizing
             </p>
             
             <div className="flex flex-wrap gap-3">
@@ -106,14 +105,14 @@ export function Dashboard() {
           </div>
           
           {/* Decorative code snippet */}
-          <div className="absolute bottom-6 right-6 hidden xl:block">
-            <div className="glass-card-sm p-4 font-mono text-xs text-[#A6B1C9]">
+                  {/*   <div className="absolute bottom-6 right-6 hidden xl:block">
+             <div className="glass-card-sm p-4 font-mono text-xs text-[#A6B1C9]">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 rounded-full bg-red-500/60" />
                 <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
                 <div className="w-2 h-2 rounded-full bg-green-500/60" />
               </div>
-              <code className="block space-y-1">
+               <code className="block space-y-1">
                 <span className="text-[#4F6EF7]">const</span>{' '}
                 <span className="text-[#F4F6FF]">result</span>{' '}
                 <span className="text-[#A6B1C9]">=</span>{' '}
@@ -122,16 +121,16 @@ export function Dashboard() {
                 <span className="text-[#F4F6FF]">  api.image.process</span>
                 <br />
                 <span className="text-[#A6B1C9]">({'{...}'})</span>
-              </code>
+               </code> 
             </div>
-          </div>
+          </div> */}
         </GlassCard>
         
         {/* Trending APIs */}
         <GlassCard size="lg">
           <div className="flex items-center gap-2 mb-5">
             <TrendingUp className="w-5 h-5 text-[#4F6EF7]" />
-            <h3 className="text-lg font-semibold text-[#F4F6FF]">Trending</h3>
+            <h3 className="text-lg font-semibold text-[#F4F6FF]">Process</h3>
           </div>
           
           <div className="space-y-3">
@@ -147,7 +146,7 @@ export function Dashboard() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-[#F4F6FF]">{api.name}</p>
-                    <p className="text-xs text-[#A6B1C9]">Popular this week</p>
+                    <p className="text-xs text-[#A6B1C9]">Soon update..</p>
                   </div>
                   <ArrowRight className="w-4 h-4 text-[#A6B1C9] opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
@@ -175,10 +174,10 @@ export function Dashboard() {
           
           <div className="space-y-3">
             {[
-              { action: 'API Key generated', time: '2 minutes ago', type: 'key' },
-              { action: 'New project created: "E-commerce API"', time: '1 hour ago', type: 'project' },
-              { action: 'Image Processing API invoked', time: '3 hours ago', type: 'api' },
-              { action: 'Documentation updated', time: '5 hours ago', type: 'doc' },
+              { action: 'API Key generated', time: '10/02/2026', type: 'key' },
+              { action: 'New project created: "Telegram Ukraine"', time: '11/02/2026', type: 'project' },
+              { action: 'API Update', time: '07/02/2026', type: 'api' },
+              { action: 'Documentation updated', time: '26/10/2025', type: 'doc' },
             ].map((item, i) => (
               <div 
                 key={i}
