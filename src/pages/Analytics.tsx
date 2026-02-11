@@ -118,7 +118,7 @@ console.log(result.url);`;
             Live metrics
           </h1>
           <p className="text-[#A6B1C9]">
-            Health, latency, and a copy-paste starter.
+            Data Analytics
           </p>
         </div>
         
@@ -190,7 +190,7 @@ console.log(result.url);`;
             </div>
             <div className="flex items-center gap-2 text-green-400">
               <TrendingUp className="w-4 h-4" />
-              <span className="text-sm font-medium">+12%</span>
+              <span className="text-sm font-medium">+31%</span>
             </div>
           </div>
           <BarChart data={requestData} />
@@ -258,8 +258,8 @@ console.log(result.url);`;
                 <span className="text-[#F4F6FF]">api</span>{' '}
                 <span className="text-[#A6B1C9]">=</span>{' '}
                 <span className="text-[#4F6EF7]">new</span>{' '}
-                <span className="text-[#F4F6FF]">APIDevs</span>
-                <span className="text-[#A6B1C9]">({'{'} </span>
+                <span className="text-[#F4F6FF]">APIDEVS ({ })</span>
+                {/* <span className="text-[#A6B1C9]">({'{'} </span>
                 <br />
                 <span className="text-[#F4F6FF] ml-4">key</span>
                 <span className="text-[#A6B1C9]">:</span>{' '}
@@ -297,7 +297,7 @@ console.log(result.url);`;
                 <span className="text-[#F4F6FF]">log</span>
                 <span className="text-[#A6B1C9]">(</span>
                 <span className="text-[#F4F6FF]">result.url</span>
-                <span className="text-[#A6B1C9]">);</span>
+                <span className="text-[#A6B1C9]">);</span> */}
               </code>
             </pre>
           </div>
@@ -317,11 +317,11 @@ console.log(result.url);`;
           
           <div className="space-y-2">
             {[
-              { method: 'GET', endpoint: '/v1/image/resize', status: 200, time: '45ms', timestamp: '2 min ago' },
-              { method: 'POST', endpoint: '/v1/convert/pdf', status: 201, time: '120ms', timestamp: '5 min ago' },
-              { method: 'GET', endpoint: '/v1/geo/lookup', status: 200, time: '32ms', timestamp: '12 min ago' },
-              { method: 'GET', endpoint: '/v1/auth/validate', status: 401, time: '8ms', timestamp: '15 min ago' },
-              { method: 'POST', endpoint: '/v1/extract/text', status: 200, time: '89ms', timestamp: '22 min ago' },
+              { method: 'GET', endpoint: '/v2.0.2.6./api', status: 200, time: '45ms', timestamp: '12/02/2026' },
+              { method: 'POST', endpoint: '/v2.0.2.6./api_doc', status: 201, time: '120ms', timestamp: '12/02/2026' },
+              { method: 'GET', endpoint: '/v2.0.2.6./api_lib', status: 200, time: '32ms', timestamp: '12/02/2026' },
+              { method: 'GET', endpoint: '/v2.0.2.6./auth_TDLib', status: 200, time: '8ms', timestamp: '12/02/2026' },
+              { method: 'POST', endpoint: '/v2.0.2.6./extract', status: 200, time: '89ms', timestamp: '12/02/2026' },
             ].map((log, i) => (
               <div 
                 key={i}
@@ -364,7 +364,7 @@ console.log(result.url);`;
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-lg font-semibold text-[#F4F6FF] mb-1">Endpoint Health</h3>
-              <p className="text-sm text-[#A6B1C9]">Real-time status of all API endpoints</p>
+              <p className="text-sm text-[#A6B1C9]">Status of all API endpoints</p>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
@@ -374,10 +374,10 @@ console.log(result.url);`;
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { name: 'Image Processing', status: 'operational', uptime: '99.99%' },
+              { name: 'Processing', status: 'operational', uptime: '99.99%' },
               { name: 'File Conversion', status: 'operational', uptime: '99.97%' },
               { name: 'Geo Lookup', status: 'operational', uptime: '100%' },
-              { name: 'Text Extraction', status: 'degraded', uptime: '98.5%' },
+              { name: 'API Extraction', status: 'degraded', uptime: '98.5%' },
             ].map((endpoint, i) => (
               <div 
                 key={i}
