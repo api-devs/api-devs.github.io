@@ -15,7 +15,23 @@
                 max-width: 100%;
             }
 
-            /* Скрываем сайдбар по умолчанию */
+            /* Оверлей — между контентом и меню */
+            .menu-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 900; /* Ниже меню (1000), выше контента */
+            }
+
+            .mobile-menu-open .menu-overlay {
+                display: block;
+            }
+
+            /* Сайдбар — выше оверлея */
             aside,
             nav[class*="sidebar"],
             div[class*="sidebar"],
@@ -27,13 +43,14 @@
                 top: 0 !important;
                 width: 85% !important;
                 height: 100vh !important;
-                z-index: 1000 !important;
+                z-index: 1000 !important; /* Выше оверлея */
                 transition: left 0.3s ease !important;
                 background: #0f172a !important;
                 overflow-y: auto !important;
+                /* Разрешаем клики только внутри меню */
+                pointer-events: auto !important;
             }
 
-            /* Открытое состояние */
             .mobile-menu-open aside,
             .mobile-menu-open nav[class*="sidebar"],
             .mobile-menu-open div[class*="sidebar"],
@@ -43,29 +60,13 @@
                 left: 0 !important;
             }
 
-            /* Оверлей */
-            .menu-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.6);
-                z-index: 999;
-            }
-
-            .mobile-menu-open .menu-overlay {
-                display: block;
-            }
-
-            /* Кнопка бургер — ТОЛЬКО когда меню закрыто */
+            /* Кнопка бургер — скрывается при открытии */
             .menu-toggle {
                 display: flex;
                 position: fixed;
                 top: 15px;
                 left: 15px;
-                z-index: 998; /* Ниже меню */
+                z-index: 1001; /* Выше меню, но скрывается при открытии */
                 background: #3b82f6;
                 color: white;
                 border: none;
@@ -77,22 +78,37 @@
                 justify-content: center;
                 cursor: pointer;
                 box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-                transition: opacity 0.2s;
+                transition: opacity 0.2s, transform 0.2s;
             }
 
-            /* Скрываем кнопку когда меню открыто */
+            /* Полностью убираем кнопку при открытом меню */
             .mobile-menu-open .menu-toggle {
                 opacity: 0;
-                pointer-events: none; /* Отключаем клики */
+                pointer-events: none;
+                transform: scale(0.8);
             }
 
-            /* Показываем кнопку закрытия внутри меню */
-            .mobile-menu-open aside .close-btn,
-            .mobile-menu-open nav .close-btn,
-            .mobile-menu-open .sidebar-header button,
-            .mobile-menu-open [class*="close"] {
-                display: block !important;
-                z-index: 1001 !important;
+            /* Запрещаем клики по основному контенту при открытом меню */
+            .mobile-menu-open #root {
+                pointer-events: none;
+            }
+
+            /* Разрешаем клики по меню */
+            .mobile-menu-open aside,
+            .mobile-menu-open aside * {
+                pointer-events: auto !important;
+            }
+
+            /* Увеличиваем области клика */
+            aside a, aside button,
+            nav a, nav button,
+            .sidebar a, .sidebar button {
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                padding: 12px 20px !important;
+                position: relative;
+                z-index: 1002; /* Выше всего внутри меню */
             }
 
             /* Адаптация текста */
@@ -102,16 +118,6 @@
             
             .grid, [class*="grid"] {
                 grid-template-columns: 1fr !important;
-            }
-
-            /* Увеличиваем области клика для пунктов меню */
-            aside a, aside button,
-            nav a, nav button,
-            .sidebar a, .sidebar button {
-                min-height: 48px;
-                display: flex;
-                align-items: center;
-                padding: 12px 20px !important;
             }
         }
 
@@ -123,7 +129,7 @@
     </style>
 </head>
 <body>
-    <!-- Оверлей для закрытия по клику вне меню -->
+    <!-- Оверлей -->
     <div class="menu-overlay" id="menuOverlay"></div>
 
     <!-- Кнопка меню -->
@@ -138,25 +144,19 @@
             const body = document.body;
             let isOpen = false;
 
-            function toggleMenu() {
-                isOpen = !isOpen;
-                
-                if (isOpen) {
-                    body.classList.add('mobile-menu-open');
-                    btn.innerHTML = '✕';
-                    btn.style.background = '#ef4444';
-                    // Перемещаем кнопку внутрь меню или скрываем
-                    btn.style.zIndex = '1001';
-                } else {
-                    body.classList.remove('mobile-menu-open');
-                    btn.innerHTML = '☰';
-                    btn.style.background = '#3b82f6';
-                    btn.style.zIndex = '998';
-                }
+            function openMenu() {
+                isOpen = true;
+                body.classList.add('mobile-menu-open');
             }
 
             function closeMenu() {
-                if (isOpen) toggleMenu();
+                isOpen = false;
+                body.classList.remove('mobile-menu-open');
+            }
+
+            function toggleMenu() {
+                if (isOpen) closeMenu();
+                else openMenu();
             }
 
             // Открытие по кнопке
@@ -165,35 +165,35 @@
                 toggleMenu();
             });
 
-            // Закрытие по оверлею
+            // Закрытие по оверлею (клик вне меню)
             overlay.addEventListener('click', closeMenu);
 
-            // Закрытие при клике на пункт меню (только если это ссылка)
+            // Обработка кликов по пунктам меню
             document.addEventListener('click', function(e) {
-                if (isOpen && e.target.closest('aside a, nav a, .sidebar a, [class*="Sidebar"] a')) {
-                    // Даем время для перехода по ссылке
-                    setTimeout(closeMenu, 150);
+                // Проверяем, что клик был по ссылке или кнопке внутри меню
+                const menuItem = e.target.closest('aside a, aside button, nav a, nav button, .sidebar a, .sidebar button');
+                
+                if (menuItem && isOpen) {
+                    e.stopPropagation(); // Останавливаем всплытие
+                    console.log('Menu item clicked:', menuItem.textContent);
+                    
+                    // Даем время для обработки клика React-ом
+                    setTimeout(function() {
+                        closeMenu();
+                    }, 100);
+                }
+            });
+
+            // Закрытие по Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isOpen) {
+                    closeMenu();
                 }
             });
 
             // Закрытие при изменении размера окна
             window.addEventListener('resize', function() {
                 if (window.innerWidth > 768 && isOpen) {
-                    closeMenu();
-                }
-            });
-
-            // Свайп для закрытия (опционально)
-            let touchStartX = 0;
-            document.addEventListener('touchstart', function(e) {
-                touchStartX = e.touches[0].clientX;
-            });
-
-            document.addEventListener('touchend', function(e) {
-                if (!isOpen) return;
-                const touchEndX = e.changedTouches[0].clientX;
-                // Свайп влево закрывает меню
-                if (touchStartX - touchEndX > 50) {
                     closeMenu();
                 }
             });
