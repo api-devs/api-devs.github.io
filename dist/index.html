@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>API.DEVS</title>
+
+    <style>
+        @media (max-width: 768px) {
+            * { box-sizing: border-box; }
+
+            /* Кнопка бургер */
+            .menu-toggle {
+                display: flex;
+                position: fixed;
+                top: 15px;
+                left: 15px;
+                z-index: 2000;
+                background: #3b82f6;
+                color: white;
+                border: none;
+                width: 44px;
+                height: 44px;
+                border-radius: 10px;
+                font-size: 20px;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            /* Скрываем кнопку при открытом меню */
+            .menu-open .menu-toggle {
+                display: none !important;
+            }
+
+            /* Оверлей - только справа от меню */
+            .menu-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 85%; /* Начинается там, где заканчивается меню */
+                width: 15%;
+                height: 100%;
+                background: rgba(0,0,0,0.6);
+                z-index: 1998;
+            }
+
+            .menu-open .menu-overlay {
+                display: block;
+            }
+
+            /* Меню */
+            aside, nav[class*="sidebar"], div[class*="sidebar"], .sidebar, [class*="Sidebar"] {
+                position: fixed !important;
+                left: -100% !important;
+                top: 0 !important;
+                width: 85% !important;
+                height: 100vh !important;
+                z-index: 1999 !important;
+                transition: left 0.3s ease !important;
+                background: #0f172a !important;
+            }
+
+            .menu-open aside,
+            .menu-open nav[class*="sidebar"],
+            .menu-open div[class*="sidebar"],
+            .menu-open .sidebar,
+            .menu-open [class*="Sidebar"] {
+                left: 0 !important;
+            }
+
+            /* Пункты меню должны быть кликабельны */
+            aside a, aside button, nav a, nav button {
+                position: relative !important;
+                z-index: 2000 !important;
+                pointer-events: auto !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle, .menu-overlay { display: none !important; }
+        }
+    </style>
+  <script type="module" crossorigin src="./assets/index-FgQcZ8N6.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BaOGAZ51.css">
+</head>
+<body>
+    <button class="menu-toggle" id="menuBtn">☰</button>
+    
+    <!-- Оверлей ТОЛЬКО справа -->
+    <div class="menu-overlay" id="overlay"></div>
+    
+    <div id="root"></div>
+
+    <script>
+        (function() {
+            const btn = document.getElementById('menuBtn');
+            const overlay = document.getElementById('overlay');
+            const body = document.body;
+            
+            function open() { body.classList.add('menu-open'); }
+            function close() { body.classList.remove('menu-open'); }
+            
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                open();
+            });
+            
+            overlay.addEventListener('click', close);
+            
+            // Закрытие при клике на пункт меню
+            document.addEventListener('click', function(e) {
+                const item = e.target.closest('aside a, aside button, nav a, nav button');
+                if (item && body.classList.contains('menu-open')) {
+                    setTimeout(close, 50);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
