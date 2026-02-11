@@ -49,7 +49,7 @@ export function Dashboard() {
       >
         <StatCard 
           icon={CheckCircle2} 
-          value={12} 
+          value={1041} 
           label="Completed Tasks"
           trend="+23%"
           trendUp
@@ -63,7 +63,7 @@ export function Dashboard() {
         />
         <StatCard 
           icon={FolderGit2} 
-          value={7} 
+          value={2} 
           label="Active Projects"
           trend="+8%"
           trendUp
