@@ -33,7 +33,7 @@ export function Dashboard() {
       >
         <h1 className="text-4xl font-bold text-[#F4F6FF] mb-3">
           The API.DEVS platform for{' '}
-          <span className="gradient-text">modern builders</span>
+          <span className="gradient-text">modern developers and information security experts</span>
         </h1>
         <p className="text-lg text-[#A6B1C9] max-w-2xl">
           Discover, test, and integrate production-ready APIs—fast. 
