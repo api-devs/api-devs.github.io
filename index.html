@@ -8,65 +8,16 @@
     <link rel="stylesheet" crossorigin href="./assets/index-BaOGAZ51.css">
 
     <style>
-        /* Мобильные стили */
         @media (max-width: 768px) {
-            * {
-                box-sizing: border-box;
-                max-width: 100%;
-            }
+            * { box-sizing: border-box; }
 
-            /* Оверлей — между контентом и меню */
-            .menu-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.5);
-                z-index: 900; /* Ниже меню (1000), выше контента */
-            }
-
-            .mobile-menu-open .menu-overlay {
-                display: block;
-            }
-
-            /* Сайдбар — выше оверлея */
-            aside,
-            nav[class*="sidebar"],
-            div[class*="sidebar"],
-            .sidebar,
-            [class*="Sidebar"],
-            #sidebar {
-                position: fixed !important;
-                left: -100% !important;
-                top: 0 !important;
-                width: 85% !important;
-                height: 100vh !important;
-                z-index: 1000 !important; /* Выше оверлея */
-                transition: left 0.3s ease !important;
-                background: #0f172a !important;
-                overflow-y: auto !important;
-                /* Разрешаем клики только внутри меню */
-                pointer-events: auto !important;
-            }
-
-            .mobile-menu-open aside,
-            .mobile-menu-open nav[class*="sidebar"],
-            .mobile-menu-open div[class*="sidebar"],
-            .mobile-menu-open .sidebar,
-            .mobile-menu-open [class*="Sidebar"],
-            .mobile-menu-open #sidebar {
-                left: 0 !important;
-            }
-
-            /* Кнопка бургер — скрывается при открытии */
+            /* Кнопка бургер */
             .menu-toggle {
                 display: flex;
                 position: fixed;
                 top: 15px;
                 left: 15px;
-                z-index: 1001; /* Выше меню, но скрывается при открытии */
+                z-index: 2000;
                 background: #3b82f6;
                 color: white;
                 border: none;
@@ -77,124 +28,91 @@
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-                transition: opacity 0.2s, transform 0.2s;
             }
 
-            /* Полностью убираем кнопку при открытом меню */
-            .mobile-menu-open .menu-toggle {
-                opacity: 0;
-                pointer-events: none;
-                transform: scale(0.8);
+            /* Скрываем кнопку при открытом меню */
+            .menu-open .menu-toggle {
+                display: none !important;
             }
 
-            /* Запрещаем клики по основному контенту при открытом меню */
-            .mobile-menu-open #root {
-                pointer-events: none;
+            /* Оверлей - только справа от меню */
+            .menu-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 85%; /* Начинается там, где заканчивается меню */
+                width: 15%;
+                height: 100%;
+                background: rgba(0,0,0,0.6);
+                z-index: 1998;
             }
 
-            /* Разрешаем клики по меню */
-            .mobile-menu-open aside,
-            .mobile-menu-open aside * {
+            .menu-open .menu-overlay {
+                display: block;
+            }
+
+            /* Меню */
+            aside, nav[class*="sidebar"], div[class*="sidebar"], .sidebar, [class*="Sidebar"] {
+                position: fixed !important;
+                left: -100% !important;
+                top: 0 !important;
+                width: 85% !important;
+                height: 100vh !important;
+                z-index: 1999 !important;
+                transition: left 0.3s ease !important;
+                background: #0f172a !important;
+            }
+
+            .menu-open aside,
+            .menu-open nav[class*="sidebar"],
+            .menu-open div[class*="sidebar"],
+            .menu-open .sidebar,
+            .menu-open [class*="Sidebar"] {
+                left: 0 !important;
+            }
+
+            /* Пункты меню должны быть кликабельны */
+            aside a, aside button, nav a, nav button {
+                position: relative !important;
+                z-index: 2000 !important;
                 pointer-events: auto !important;
-            }
-
-            /* Увеличиваем области клика */
-            aside a, aside button,
-            nav a, nav button,
-            .sidebar a, .sidebar button {
-                min-height: 48px;
-                display: flex;
-                align-items: center;
-                padding: 12px 20px !important;
-                position: relative;
-                z-index: 1002; /* Выше всего внутри меню */
-            }
-
-            /* Адаптация текста */
-            h1, h2, .text-4xl, .text-3xl {
-                font-size: 1.5rem !important;
-            }
-            
-            .grid, [class*="grid"] {
-                grid-template-columns: 1fr !important;
             }
         }
 
         @media (min-width: 769px) {
-            .menu-toggle, .menu-overlay {
-                display: none !important;
-            }
+            .menu-toggle, .menu-overlay { display: none !important; }
         }
     </style>
 </head>
 <body>
-    <!-- Оверлей -->
-    <div class="menu-overlay" id="menuOverlay"></div>
-
-    <!-- Кнопка меню -->
-    <button class="menu-toggle" id="menuBtn" aria-label="Открыть меню">☰</button>
-
+    <button class="menu-toggle" id="menuBtn">☰</button>
+    
+    <!-- Оверлей ТОЛЬКО справа -->
+    <div class="menu-overlay" id="overlay"></div>
+    
     <div id="root"></div>
 
     <script>
         (function() {
             const btn = document.getElementById('menuBtn');
-            const overlay = document.getElementById('menuOverlay');
+            const overlay = document.getElementById('overlay');
             const body = document.body;
-            let isOpen = false;
-
-            function openMenu() {
-                isOpen = true;
-                body.classList.add('mobile-menu-open');
-            }
-
-            function closeMenu() {
-                isOpen = false;
-                body.classList.remove('mobile-menu-open');
-            }
-
-            function toggleMenu() {
-                if (isOpen) closeMenu();
-                else openMenu();
-            }
-
-            // Открытие по кнопке
+            
+            function open() { body.classList.add('menu-open'); }
+            function close() { body.classList.remove('menu-open'); }
+            
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                toggleMenu();
+                open();
             });
-
-            // Закрытие по оверлею (клик вне меню)
-            overlay.addEventListener('click', closeMenu);
-
-            // Обработка кликов по пунктам меню
+            
+            overlay.addEventListener('click', close);
+            
+            // Закрытие при клике на пункт меню
             document.addEventListener('click', function(e) {
-                // Проверяем, что клик был по ссылке или кнопке внутри меню
-                const menuItem = e.target.closest('aside a, aside button, nav a, nav button, .sidebar a, .sidebar button');
-                
-                if (menuItem && isOpen) {
-                    e.stopPropagation(); // Останавливаем всплытие
-                    console.log('Menu item clicked:', menuItem.textContent);
-                    
-                    // Даем время для обработки клика React-ом
-                    setTimeout(function() {
-                        closeMenu();
-                    }, 100);
-                }
-            });
-
-            // Закрытие по Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && isOpen) {
-                    closeMenu();
-                }
-            });
-
-            // Закрытие при изменении размера окна
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768 && isOpen) {
-                    closeMenu();
+                const item = e.target.closest('aside a, aside button, nav a, nav button');
+                if (item && body.classList.contains('menu-open')) {
+                    setTimeout(close, 50);
                 }
             });
         })();
