@@ -1,126 +1,1612 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <title>API.DEVS</title>
-    <script type="module" crossorigin src="./assets/index-DEYDuFWd.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BaOGAZ51.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>API.DEVS — cybersecurity, OSINT-intelligence and secure design</title>
+<link rel="icon" type="image/png" sizes="32x32" href="avatar.png">
+<meta name="description" content="API.DEVS — cybersecurity and OSINT studio. Digital footprint audit, leak monitoring, threat intelligence, and secure product design.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   API.DEVS — design tokens
+   ============================================================ */
+:root{
+  --bg-base:#060810;
+  --bg-base-2:#0A0D17;
+  --glass-fill:rgba(255,255,255,0.05);
+  --glass-fill-strong:rgba(255,255,255,0.09);
+  --glass-border:rgba(255,255,255,0.13);
+  --glass-border-bright:rgba(255,255,255,0.30);
 
-    <style>
-        @media (max-width: 768px) {
-            * {
-                box-sizing: border-box;
-            }
+  --accent-cyan:#4FE3FF;
+  --accent-cyan-rgb:79,227,255;
+  --accent-violet:#9B6BFF;
+  --accent-violet-rgb:155,107,255;
+  --accent-magenta:#FF5FA8;
+  --accent-magenta-rgb:255,95,168;
+  --accent-amber:#FFC368;
 
-            /* Кнопка бургер */
-            .menu-toggle {
-                display: flex;
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                z-index: 2000;
-                background: #3b82f6;
-                color: white;
-                border: none;
-                width: 44px;
-                height: 44px;
-                border-radius: 10px;
-                font-size: 20px;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-            }
+  --text-primary:#F4F6FA;
+  --text-secondary:#9AA3B5;
+  --text-tertiary:#5C6678;
 
-            /* Скрываем кнопку при открытом меню */
-            .menu-open .menu-toggle {
-                display: none !important;
-            }
+  --font-display:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
 
-            /* Оверлей - только справа от меню */
-            .menu-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 85%; /* Начинается там, где заканчивается меню */
-                width: 15%;
-                height: 100%;
-                background: rgba(0,0,0,0.6);
-                z-index: 1998;
-            }
+  --radius-sm:14px;
+  --radius-md:20px;
+  --radius-lg:28px;
+  --radius-pill:999px;
 
-            .menu-open .menu-overlay {
-                display: block;
-            }
+  --shadow-soft:0 24px 60px -28px rgba(0,0,0,.7);
+  --shadow-glow-cyan:0 0 50px -12px rgba(var(--accent-cyan-rgb),.45);
+  --shadow-glow-violet:0 0 50px -12px rgba(var(--accent-violet-rgb),.4);
 
-            /* Меню */
-            aside, nav[class*="sidebar"], div[class*="sidebar"], .sidebar, [class*="Sidebar"] {
-                position: fixed !important;
-                left: -100% !important;
-                top: 0 !important;
-                width: 85% !important;
-                height: 100vh !important;
-                z-index: 1999 !important;
-                transition: left 0.3s ease !important;
-                background: #0f172a !important;
-            }
+  --ease:cubic-bezier(.16,.84,.32,1);
+  --container:1180px;
+}
 
-            .menu-open aside,
-            .menu-open nav[class*="sidebar"],
-            .menu-open div[class*="sidebar"],
-            .menu-open .sidebar,
-            .menu-open [class*="Sidebar"] {
-                left: 0 !important;
-            }
+/* ============================================================
+   Reset
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  background:var(--bg-base);
+  color:var(--text-primary);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.55;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block;max-width:100%;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit;}
+input,textarea,select{font-family:inherit;font-size:1rem;color:inherit;background:none;border:none;}
+section[id]{scroll-margin-top:96px;}
 
-            /* Пункты меню должны быть кликабельны */
-            aside a, aside button, nav a, nav button {
-                position: relative !important;
-                z-index: 2000 !important;
-                pointer-events: auto !important;
-            }
-        }
+:focus-visible{outline:2px solid var(--accent-cyan);outline-offset:3px;border-radius:6px;}
 
-        @media (min-width: 769px) {
-            .menu-toggle, .menu-overlay {
-                display: none !important;
-            }
-        }
-    </style>
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+}
+
+.skip-link{
+  position:absolute;left:-9999px;top:0;background:var(--accent-cyan);color:#04111a;
+  padding:.6rem 1rem;border-radius:0 0 10px 0;font-family:var(--font-mono);font-size:.85rem;z-index:999;
+}
+.skip-link:focus{left:0;}
+
+/* ============================================================
+   Layout helpers
+   ============================================================ */
+.container{width:100%;max-width:var(--container);margin:0 auto;padding:0 clamp(1.25rem,4vw,2.5rem);}
+.section{padding:clamp(4rem,9vw,7.5rem) 0;position:relative;}
+.section-head{max-width:640px;margin-bottom:clamp(2.5rem,5vw,3.5rem);}
+.section-head.center{margin-inline:auto;text-align:center;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:.55rem;
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent-cyan);margin-bottom:1rem;
+}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent-cyan);box-shadow:0 0 10px 2px rgba(var(--accent-cyan-rgb),.7);}
+h1,h2,h3{font-family:var(--font-display);font-weight:800;letter-spacing:-0.02em;color:var(--text-primary);}
+.section-head h2{font-size:clamp(1.8rem,3.6vw,2.7rem);margin-bottom:.85rem;line-height:1.15;}
+.section-head p{color:var(--text-secondary);font-size:1.02rem;}
+.text-secondary{color:var(--text-secondary);}
+
+.grad-text{
+  background:linear-gradient(95deg,var(--accent-cyan),var(--accent-violet) 60%,var(--accent-magenta));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* Glass surface */
+.glass{
+  background:var(--glass-fill);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  backdrop-filter:blur(22px) saturate(180%);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), var(--shadow-soft);
+}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  font-family:var(--font-body);font-weight:600;font-size:.95rem;
+  padding:.85rem 1.6rem;border-radius:var(--radius-pill);
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease), background .35s var(--ease);
+  white-space:nowrap;
+}
+.btn .icon{width:1rem;height:1rem;}
+.btn-primary{
+  color:#04111a;
+  background:linear-gradient(95deg,var(--accent-cyan),var(--accent-violet));
+  box-shadow:var(--shadow-glow-cyan);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 60px -8px rgba(var(--accent-cyan-rgb),.6);}
+.btn-ghost{
+  color:var(--text-primary);
+  background:var(--glass-fill-strong);
+  border:1px solid var(--glass-border);
+}
+.btn-ghost:hover{transform:translateY(-2px);border-color:var(--glass-border-bright);background:var(--glass-fill);}
+.btn-block{width:100%;}
+
+/* Language Selector Styles */
+.lang-selector {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+.lang-select {
+  background: var(--glass-fill-strong);
+  border: 1px solid var(--glass-border);
+  color: #717171;
+  padding: 0.4rem 1.8rem 0.4rem 0.8rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.25s var(--ease);
+}
+    .lang-selector::after {
+        background: var(--glass-fill-strong);
+        content: "";
+        position: absolute;
+        right: 0.8rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 4px solid var(--text-secondary);
+        pointer-events: none;
+    }
+.lang-select:focus, .lang-select:hover {
+  border-color: var(--glass-border-bright);
+  outline: none;
+}
+
+/* ============================================================
+   Ambient background
+   ============================================================ */
+.ambient{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg-base);}
+.blob{position:absolute;border-radius:50%;filter:blur(95px);opacity:.55;mix-blend-mode:screen;will-change:transform;}
+.blob-1{width:46vw;height:46vw;top:-12vw;left:-8vw;background:radial-gradient(circle,var(--accent-violet),transparent 70%);animation:float1 36s ease-in-out infinite alternate;}
+.blob-2{width:38vw;height:38vw;top:18vw;right:-12vw;background:radial-gradient(circle,var(--accent-cyan),transparent 70%);animation:float2 42s ease-in-out infinite alternate;}
+.blob-3{width:32vw;height:32vw;bottom:-10vw;left:18vw;background:radial-gradient(circle,var(--accent-magenta),transparent 70%);opacity:.35;animation:float3 50s ease-in-out infinite alternate;}
+.ambient::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent,var(--bg-base) 85%);}
+@keyframes float1{from{transform:translate(0,0) scale(1);}to{transform:translate(6vw,8vw) scale(1.15);}}
+@keyframes float2{from{transform:translate(0,0) scale(1);}to{transform:translate(-7vw,5vw) scale(1.1);}}
+@keyframes float3{from{transform:translate(0,0) scale(1);}to{transform:translate(4vw,-6vw) scale(1.2);}}
+
+/* ============================================================
+   Header / nav
+   ============================================================ */
+header{position:fixed;top:0;left:0;width:100%;z-index:100;padding:1.1rem clamp(1rem,4vw,2.5rem) 0;}
+.nav-pill{
+  max-width:var(--container);margin:0 auto;display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;padding:.65rem .7rem .65rem 1.2rem;border-radius:var(--radius-pill);
+  background:rgba(10,12,20,.35);border:1px solid var(--glass-border);
+  backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+  transition:background .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
+}
+header.scrolled .nav-pill{background:rgba(8,10,18,.65);border-color:var(--glass-border-bright);box-shadow:var(--shadow-soft);}
+.logo{
+  font-family:var(--font-mono);font-weight:600;font-size:1.02rem;letter-spacing:-.01em;
+  display:flex;align-items:center;gap:.45rem;color:var(--text-primary);
+}
+.logo .bracket{color:var(--accent-cyan);}
+.nav-links{display:flex;align-items:center;gap:1.9rem;font-size:.92rem;color:var(--text-secondary);}
+.nav-links a{transition:color .25s var(--ease);position:relative;}
+.nav-links a:hover{color:var(--text-primary);}
+.status-dot-wrap{display:none;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:.7rem;color:var(--text-tertiary);letter-spacing:.08em;}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--accent-cyan);box-shadow:0 0 8px 2px rgba(var(--accent-cyan-rgb),.7);animation:pulse 2.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.45;transform:scale(.78);}}
+.nav-cta{display:flex;align-items:center;gap:.6rem;}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:38px;height:38px;border-radius:50%;background:var(--glass-fill-strong);border:1px solid var(--glass-border);align-items:center;}
+.hamburger span{width:16px;height:1.5px;background:var(--text-primary);transition:transform .3s var(--ease), opacity .3s var(--ease);}
+.hamburger.is-open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.hamburger.is-open span:nth-child(2){opacity:0;}
+.hamburger.is-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+.mobile-nav{
+  position:fixed;inset:0;z-index:99;background:rgba(6,8,16,.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;
+  opacity:0;visibility:hidden;transition:opacity .35s var(--ease), visibility .35s var(--ease);
+}
+.mobile-nav.is-open{opacity:1;visibility:visible;}
+.mobile-nav a{font-family:var(--font-display);font-weight:700;font-size:1.7rem;color:var(--text-primary);}
+.mobile-nav .btn{margin-top:1rem;}
+
+@media (max-width:880px){
+  .nav-links{display:none;}
+  .nav-cta .btn-primary{display:none;}
+  .hamburger{display:flex;}
+  .status-dot-wrap{display:none !important;}
+}
+@media (min-width:1080px){
+  .status-dot-wrap{display:flex;}
+}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero{padding:clamp(7.5rem,14vw,10.5rem) 0 clamp(4rem,8vw,6rem);}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,4rem);align-items:center;}
+.hero h1{font-size:clamp(2.3rem,5.4vw,3.8rem);line-height:1.08;margin-bottom:1.3rem;}
+.hero p.lead{font-size:1.08rem;color:var(--text-secondary);max-width:520px;margin-bottom:2.1rem;}
+.hero-cta{display:flex;flex-wrap:wrap;gap:.9rem;margin-bottom:2.2rem;}
+.hero-meta{display:flex;flex-wrap:wrap;gap:1.4rem;font-size:.82rem;color:var(--text-tertiary);}
+.hero-meta span{display:flex;align-items:center;gap:.5rem;}
+.hero-meta .dot{width:5px;height:5px;border-radius:50%;background:var(--text-tertiary);}
+
+/* Scan widget */
+.scan-card{padding:1.4rem 1.4rem 1.6rem;}
+.scan-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;padding-bottom:1rem;border-bottom:1px solid var(--glass-border);}
+.scan-title{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.1em;color:var(--text-secondary);}
+.scan-status{display:flex;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:.7rem;color:var(--accent-cyan);letter-spacing:.08em;}
+.scan-target{font-family:var(--font-mono);font-size:.86rem;color:var(--text-primary);margin-bottom:1rem;min-height:1.3em;}
+.scan-target .prompt{color:var(--accent-violet);margin-right:.4rem;}
+.scan-lines{min-height:168px;display:flex;flex-direction:column;gap:.85rem;}
+.scan-line{opacity:0;transform:translateY(6px);transition:opacity .4s var(--ease), transform .4s var(--ease);}
+.scan-line.is-shown{opacity:1;transform:translateY(0);}
+.scan-line .label{font-family:var(--font-mono);font-size:.78rem;color:var(--text-secondary);margin-bottom:.4rem;display:block;}
+.scan-bar{height:5px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;}
+.scan-bar i{display:block;height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-violet));transition:width .9s var(--ease);}
+.scan-results{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem;opacity:0;transform:translateY(6px);transition:opacity .4s var(--ease), transform .4s var(--ease);}
+.scan-results.is-shown{opacity:1;transform:translateY(0);}
+.chip{font-family:var(--font-mono);font-size:.74rem;padding:.4rem .75rem;border-radius:999px;background:var(--glass-fill-strong);border:1px solid var(--glass-border);color:var(--text-secondary);}
+.chip.risk-low{color:var(--accent-cyan);border-color:rgba(var(--accent-cyan-rgb),.4);}
+.chip.risk-medium{color:var(--accent-amber);border-color:rgba(255,195,104,.4);}
+.chip.risk-high{color:var(--accent-magenta);border-color:rgba(var(--accent-magenta-rgb),.4);}
+
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;}
+  .scan-card{order:2;}
+}
+
+/* ============================================================
+   Standards strip
+   ============================================================ */
+.standards{padding:clamp(2.5rem,5vw,3.5rem) 0;}
+.standards p.label{text-align:center;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:1.5rem;}
+.standards-row{display:flex;justify-content:center;flex-wrap:wrap;gap:.8rem;}
+.standards-row .pill{font-family:var(--font-mono);font-size:.78rem;color:var(--text-secondary);padding:.55rem 1.1rem;border-radius:999px;}
+
+/* ============================================================
+   Reveal on scroll
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease), transform .7s var(--ease);}
+.reveal.in-view{opacity:1;transform:translateY(0);}
+.reveal-stagger > *{opacity:0;transform:translateY(22px);transition:opacity .6s var(--ease), transform .6s var(--ease);}
+.reveal-stagger.in-view > *{opacity:1;transform:translateY(0);}
+.reveal-stagger.in-view > *:nth-child(1){transition-delay:0s;}
+.reveal-stagger.in-view > *:nth-child(2){transition-delay:.08s;}
+.reveal-stagger.in-view > *:nth-child(3){transition-delay:.16s;}
+.reveal-stagger.in-view > *:nth-child(4){transition-delay:.24s;}
+.reveal-stagger.in-view > *:nth-child(5){transition-delay:.32s;}
+.reveal-stagger.in-view > *:nth-child(6){transition-delay:.4s;}
+
+/* ============================================================
+   Services
+   ============================================================ */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.2rem;}
+.service-card{padding:1.7rem 1.6rem;transition:transform .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);}
+.service-card:hover{transform:translateY(-5px);border-color:var(--glass-border-bright);box-shadow:var(--shadow-glow-cyan);}
+.service-tag{display:inline-block;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;color:var(--accent-cyan);background:rgba(var(--accent-cyan-rgb),.1);padding:.3rem .6rem;border-radius:6px;margin-bottom:1rem;}
+.service-card .icon-wrap{width:46px;height:46px;border-radius:14px;background:var(--glass-fill-strong);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;color:var(--accent-violet);}
+.service-card .icon{width:22px;height:22px;}
+.service-card h3{font-size:1.12rem;margin-bottom:.55rem;}
+.service-card p{font-size:.92rem;color:var(--text-secondary);}
+
+/* ============================================================
+   OSINT deep section
+   ============================================================ */
+.osint-grid{display:grid;grid-template-columns:1fr .92fr;gap:clamp(2rem,5vw,3.5rem);align-items:center;}
+.osint-list{display:flex;flex-direction:column;gap:1rem;margin-top:1.6rem;}
+.osint-list li{display:flex;align-items:flex-start;gap:.8rem;font-size:.96rem;color:var(--text-secondary);}
+.osint-list .icon{width:1.1rem;height:1.1rem;color:var(--accent-cyan);flex-shrink:0;margin-top:.18rem;}
+.osint-list strong{color:var(--text-primary);font-weight:600;}
+.network-card{padding:1.5rem;}
+.network-card svg{width:100%;height:auto;}
+@media (max-width:980px){.osint-grid{grid-template-columns:1fr;}.network-card{order:-1;}}
+
+/* ============================================================
+   Process timeline
+   ============================================================ */
+.timeline{max-width:760px;margin:0 auto;position:relative;}
+.timeline::before{content:"";position:absolute;left:23px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--accent-cyan),var(--accent-violet));opacity:.35;}
+.timeline-item{display:grid;grid-template-columns:48px 1fr;gap:1.4rem;margin-bottom:1.4rem;}
+.timeline-item:last-child{margin-bottom:0;}
+.timeline-num{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:600;font-size:.95rem;color:var(--text-primary);background:var(--bg-base-2);border:1px solid var(--glass-border-bright);z-index:1;box-shadow:0 0 0 6px var(--bg-base);}
+.timeline-card{padding:1.3rem 1.4rem;}
+.timeline-card h3{font-size:1.05rem;margin-bottom:.4rem;}
+.timeline-card p{font-size:.92rem;color:var(--text-secondary);}
+
+/* ============================================================
+   Metrics
+   ============================================================ */
+.metrics-card{display:grid;grid-template-columns:repeat(4,1fr);}
+.metric{padding:2.1rem 1rem;text-align:center;border-right:1px solid var(--glass-border);}
+.metric:last-child{border-right:none;}
+.metric-number{font-family:var(--font-mono);font-weight:600;font-size:clamp(1.7rem,3.4vw,2.3rem);color:var(--text-primary);display:flex;align-items:baseline;justify-content:center;gap:.15rem;}
+.metric-number .pre,.metric-number .suf{color:var(--accent-cyan);font-size:.85em;}
+.metric-label{margin-top:.5rem;font-size:.84rem;color:var(--text-secondary);}
+@media (max-width:760px){.metrics-card{grid-template-columns:repeat(2,1fr);}
+  .metric:nth-child(2){border-right:none;}
+  .metric:nth-child(1),.metric:nth-child(2){border-bottom:1px solid var(--glass-border);}
+}
+
+/* ============================================================
+   Testimonials
+   ============================================================ */
+.testimonial-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;}
+.testimonial-card{padding:1.7rem 1.6rem;display:flex;flex-direction:column;gap:1.2rem;}
+.testimonial-card p.quote{font-size:.97rem;color:var(--text-primary);line-height:1.6;}
+.testimonial-author{display:flex;align-items:center;gap:.8rem;}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.78rem;font-weight:600;color:#04111a;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-violet));flex-shrink:0;}
+.testimonial-author .name{font-size:.88rem;font-weight:600;color:var(--text-primary);}
+.testimonial-author .role{font-size:.78rem;color:var(--text-tertiary);}
+
+/* ============================================================
+   Pricing
+   ============================================================ */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;align-items:stretch;}
+.price-card{padding:1.9rem 1.7rem;display:flex;flex-direction:column;position:relative;}
+.price-card.popular{border-color:rgba(var(--accent-cyan-rgb),.5);box-shadow:var(--shadow-glow-cyan);}
+.popular-tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(95deg,var(--accent-cyan),var(--accent-violet));color:#04111a;padding:.35rem .8rem;border-radius:999px;}
+.price-card h3{font-size:1.2rem;margin-bottom:.4rem;}
+.price-card .price-note{font-family:var(--font-mono);font-size:.82rem;color:var(--accent-cyan);margin-bottom:1.3rem;}
+.price-features{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.6rem;flex-grow:1;}
+.price-features li{display:flex;align-items:flex-start;gap:.65rem;font-size:.88rem;color:var(--text-secondary);}
+.price-features .icon{width:1rem;height:1rem;color:var(--accent-cyan);margin-top:.2rem;flex-shrink:0;}
+@media (max-width:920px){.pricing-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto;}}
+
+/* ============================================================
+   Contact
+   ============================================================ */
+.contact-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1.4rem;align-items:start;}
+.contact-form{padding:clamp(1.8rem,4vw,2.4rem);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.1rem;}
+.field{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.1rem;}
+.field label{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);}
+.field input,.field textarea,.field select{
+  background:var(--glass-fill-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);
+  padding:.8rem 1rem;font-size:.94rem;color:var(--text-primary);transition:border-color .25s var(--ease), box-shadow .25s var(--ease);
+}
+.field select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239AA3B5' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 1rem center;}
+.field input::placeholder,.field textarea::placeholder{color:var(--text-tertiary);}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent-cyan);box-shadow:0 0 0 3px rgba(var(--accent-cyan-rgb),.18);outline:none;}
+.field textarea{resize:vertical;min-height:110px;}
+.consent{display:flex;align-items:flex-start;gap:.6rem;font-size:.82rem;color:var(--text-tertiary);margin-bottom:1.4rem;}
+.consent input{width:16px;height:16px;margin-top:.15rem;accent-color:var(--accent-cyan);}
+.form-success{display:none;flex-direction:column;align-items:center;text-align:center;gap:1rem;padding:2.5rem 1rem;}
+.form-success.is-shown{display:flex;}
+.form-success .icon-circle{width:56px;height:56px;border-radius:50%;background:rgba(var(--accent-cyan-rgb),.12);border:1px solid rgba(var(--accent-cyan-rgb),.4);display:flex;align-items:center;justify-content:center;color:var(--accent-cyan);}
+.form-success .icon-circle .icon{width:26px;height:26px;}
+.is-hidden{display:none !important;}
+
+.contact-info{padding:clamp(1.8rem,4vw,2.2rem);display:flex;flex-direction:column;gap:1.4rem;}
+.info-row{display:flex;align-items:flex-start;gap:.9rem;}
+.info-row .icon-wrap{width:40px;height:40px;border-radius:12px;background:var(--glass-fill-strong);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;color:var(--accent-violet);flex-shrink:0;}
+.info-row .icon{width:18px;height:18px;}
+.info-row .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-tertiary);font-family:var(--font-mono);margin-bottom:.2rem;}
+.info-row .value{font-size:.95rem;color:var(--text-primary);}
+@media (max-width:920px){.contact-grid{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-border);margin-top:clamp(3rem,6vw,5rem);}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2.8rem;}
+.footer-brand p{color:var(--text-secondary);font-size:.9rem;margin:.9rem 0 1.3rem;max-width:280px;}
+.footer-socials{display:flex;gap:.6rem;}
+.social-btn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.66rem;color:var(--text-secondary);transition:color .25s var(--ease), border-color .25s var(--ease);}
+.social-btn:hover{color:var(--accent-cyan);border-color:var(--glass-border-bright);}
+.footer-col h4{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:1.1rem;}
+.footer-col ul{display:flex;flex-direction:column;gap:.65rem;}
+.footer-col a{font-size:.9rem;color:var(--text-secondary);transition:color .25s var(--ease);}
+.footer-col a:hover{color:var(--text-primary);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.8rem;border-top:1px solid var(--glass-border);font-size:.82rem;color:var(--text-tertiary);}
+.footer-bottom .legal{display:flex;gap:1.4rem;}
+@media (max-width:880px){.footer-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:560px){.footer-grid{grid-template-columns:1fr;}.footer-bottom{flex-direction:column;align-items:flex-start;}}
+</style>
 </head>
 <body>
-    <button class="menu-toggle" id="menuBtn">☰</button>
 
-    <!-- Оверлей ТОЛЬКО справа -->
-    <div class="menu-overlay" id="overlay"></div>
+<a href="#main" class="skip-link" data-i18n="skipLink">Skip to content</a>
 
-    <div id="root"></div>
+<div class="ambient" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Icon sprite -->
+<svg style="display:none" aria-hidden="true">
+<defs>
+  <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><circle cx="10" cy="10" r="1.3" fill="currentColor" stroke="none"/><line x1="14.6" y1="14.6" x2="21" y2="21"/></symbol>
+  <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 L19 6 V11 C19 16 16 19.5 12 21 C8 19.5 5 16 5 11 V6 Z"/><path d="M8.5 12 L11 14.5 L15.5 9.5"/></symbol>
+  <symbol id="icon-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="6" opacity=".6"/><circle cx="12" cy="12" r="10" opacity=".3"/><line x1="12" y1="12" x2="19.5" y2="6.5"/></symbol>
+  <symbol id="icon-network" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/><line x1="12" y1="12" x2="6" y2="6.6"/><line x1="12" y1="12" x2="18" y2="6.6"/><line x1="12" y1="12" x2="6" y2="17.4"/><line x1="12" y1="12" x2="18" y2="17.4"/></symbol>
+  <symbol id="icon-chat-alert" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="3"/><path d="M8 17 L6 21 L11.5 17"/><line x1="12" y1="9" x2="12" y2="12.2"/><circle cx="12" cy="14.4" r=".7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="icon-layers" viewBox="0 0 24 24"><path d="M12 3 L21 8 L12 13 L3 8 Z"/><path d="M3 12 L12 17 L21 12"/><path d="M3 16 L12 21 L21 16"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><path d="M5 13 L9.5 17.5 L19 7"/></symbol>
+  <symbol id="icon-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><path d="M13 6 L19 12 L13 18"/></symbol>
+  <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7 L12 13 L21 7"/></symbol>
+  <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7 V12 L16 14"/></symbol>
+  <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></symbol>
+  <symbol id="icon-fingerprint" viewBox="0 0 24 24"><path d="M12 4 a8 8 0 0 1 8 8 v3"/><path d="M12 4 a8 8 0 0 0 -8 8 v3"/><path d="M12 8 a4 4 0 0 1 4 4 v4"/><path d="M12 8 a4 4 0 0 0 -4 4 v2"/><line x1="12" y1="12" x2="12" y2="17"/></symbol>
+</defs>
+</svg>
+
+<!-- ============================== HEADER ============================== -->
+<header id="siteHeader">
+  <nav class="nav-pill" aria-label="Main navigation">
+    <a href="#home" class="logo"><span class="bracket">&lt;</span>API.DEVS<span class="bracket">/&gt;</span></a>
+    <ul class="nav-links">
+      <li><a href="#services" data-i18n="navServices">Services</a></li>
+      <li><a href="#osint" data-i18n="navOsint">OSINT</a></li>
+      <li><a href="#process" data-i18n="navProcess">Process</a></li>
+      <li><a href="#pricing" data-i18n="navPricing">Pricing</a></li>
+      <li><a href="#contact" data-i18n="navContact">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <span class="status-dot-wrap"><span class="pulse-dot"></span><span data-i18n="navStatus">MONITORING ACTIVE</span></span>
+      
+      <!-- Language Chooser -->
+      <div class="lang-selector">
+        <select class="lang-select" id="langSelect" aria-label="Select Language">
+          <option value="en">EN</option>
+          <option value="uk">UK</option>
+          <option value="ru">RU</option>
+        </select>
+      </div>
+
+      <a href="https://t.me/CSO_System" class="btn btn-primary" data-i18n="navCta">Request audit</a>
+      <button class="hamburger" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#services" data-i18n="navServices">Services</a>
+  <a href="#osint" data-i18n="navOsint">OSINT</a>
+  <a href="#process" data-i18n="navProcess">Process</a>
+  <a href="#pricing" data-i18n="navPricing">Pricing</a>
+  <a href="#contact" data-i18n="navContact">Contact</a>
+  <a href="#contact" class="btn btn-primary" data-i18n="navCta">Request audit</a>
+</div>
+
+<main id="main">
+
+    <!-- ============================== HERO ============================== -->
+    <section class="hero" id="home">
+        <div class="container hero-grid">
+            <div class="hero-text">
+                <span class="eyebrow" data-i18n="heroEyebrow">API.DEVS · Cybersecurity & OSINT</span>
+                <h1 id="heroTitle">Making <span class="grad-text">visible</span> what is hidden online</h1>
+                <p class="lead" data-i18n="heroLead">Cybersecurity and OSINT-intelligence studio. We gather digital footprints, assess attack surfaces, and design defense systems that are convenient for everyday use.</p>
+                <div class="hero-cta">
+                    <a href="#contact" class="btn btn-primary" id="heroCtaPrimary">Request OSINT-audit<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></a>
+                    <a href="#process" class="btn btn-ghost" data-i18n="heroCtaGhost">How we work</a>
+                </div>
+                <div class="hero-meta">
+                    <span><i class="dot"></i> <span data-i18n="heroMetaNda">NDA by default</span></span>
+                    <span><i class="dot"></i> <span data-i18n="heroMetaReport">Report in 5–10 business days</span></span>
+                    <span><i class="dot"></i> <span data-i18n="heroMetaRemote">Remote work, worldwide</span></span>
+                </div>
+            </div>
+
+            <div class="scan-card glass" id="scanWidget">
+                <div class="scan-head">
+                    <span class="scan-title">OSINT // LIVE-SCAN</span>
+                    <span class="scan-status"><span class="pulse-dot"></span> ACTIVE</span>
+                </div>
+                <div class="scan-target" id="scanTarget"><span class="prompt">&gt;</span>target: —</div>
+                <div class="scan-lines" id="scanLines"></div>
+                <div class="scan-results" id="scanResults"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== STANDARDS ============================== -->
+    <section class="standards">
+        <div class="container reveal">
+            <p class="label" data-i18n="standardsLabel">Methodology is built on recognized industrial approaches</p>
+            <div class="standards-row">
+                <span class="pill glass">ISO/IEC 27001</span>
+                <span class="pill glass">MITRE ATT&amp;CK</span>
+                <span class="pill glass">OWASP</span>
+                <span class="pill glass">NIST CSF</span>
+                <span class="pill glass">OSINT Framework</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== SERVICES ============================== -->
+    <section class="section" id="services">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow" data-i18n="servicesEyebrow">What we do</span>
+                <h2 data-i18n="servicesTitle">Intelligence, defense, and design — in one loop</h2>
+                <p data-i18n="servicesLead">From a one-time audit to continuous perimeter monitoring: we tailor the format to the task, not the other way around.</p>
+            </div>
+            <div class="services-grid reveal-stagger">
+
+                <div class="service-card glass">
+                    <span class="service-tag">[OSINT]</span>
+                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg></div>
+                    <h3 data-i18n="s1Title">OSINT Investigations</h3>
+                    <p data-i18n="s1Desc">We collect and verify data from open sources — social networks, forums, registries, leaks — to provide a complete picture of a person, company, or asset before decision making.</p>
+                </div>
+
+                <div class="service-card glass">
+                    <span class="service-tag">[AUDIT]</span>
+                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-fingerprint"></use></svg></div>
+                    <h3 data-i18n="s2Title">Digital Footprint Audit</h3>
+                    <p data-i18n="s2Desc">We reveal what is already known about you and your company online: from old accounts to accidentally exposed infrastructure — and how to close it.</p>
+                </div>
+
+                <div class="service-card glass">
+                    <span class="service-tag">[MONITOR]</span>
+                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-radar"></use></svg></div>
+                    <h3 data-i18n="s3Title">Leak & Darknet Monitoring</h3>
+                    <p data-i18n="s3Desc">We track mentions of your credentials, domains, and employees in data leaks and shadow forums — notifying you before attackers can exploit them.</p>
+                </div>
+
+                <div class="service-card glass">
+                    <span class="service-tag">[INTEL]</span>
+                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-network"></use></svg></div>
+                    <h3 data-i18n="s4Title">Threat Intelligence</h3>
+                    <p data-i18n="s4Desc">We transform scattered indicators of compromise into a clear threat map, mapped specifically to your infrastructure and industry.</p>
+                </div>
+
+                <div class="service-card glass">
+                    <span class="service-tag">[TRAIN]</span>
+                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-chat-alert"></use></svg></div>
+                    <h3 data-i18n="s5Title">Social Engineering & Awareness</h3>
+                    <p data-i18n="s5Desc">We test team resilience to phishing and manipulation through controlled scenarios — focusing on education, not intimidation.</p>
+                </div>
+
+                <div class="service-card glass">
+                    <span class="service-tag">[DESIGN]</span>
+                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-layers"></use></svg></div>
+                    <h3 data-i18n="s6Title">Security by Design</h3>
+                    <p data-i18n="s6Desc">We embed security requirements into interfaces and product architecture at the very start — making protection feel like a natural part of the user experience.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== OSINT DEEP ============================== -->
+    <section class="section" id="osint">
+        <div class="container osint-grid">
+            <div class="reveal">
+                <span class="eyebrow" data-i18n="osintEyebrow">Our primary discipline</span>
+                <h2 style="font-size:clamp(1.8rem,3.6vw,2.6rem);margin-bottom:.9rem;" data-i18n="osintTitle">OSINT — Open Source Intelligence</h2>
+                <p class="text-secondary" data-i18n="osintDesc">We collect data using legal methods: public profiles, registries, leaks, metadata, infrastructure. The result is a structured report with an evidentiary base, not just a bunch of screenshots.</p>
+                <ul class="osint-list">
+                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL1"><strong>Due diligence</strong> — verification of counterparties, partners, and candidates before a deal or hire.</span></li>
+                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL2"><strong>Digital deanonymization</strong> — connecting aliases, accounts, and geotags into a single cohesive profile.</span></li>
+                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL3"><strong>Brand monitoring</strong> — fake profiles, phishing domains, leak of internal corporate materials.</span></li>
+                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL4"><strong>Competitive intelligence</strong> — public signals about strategy, hiring, and market infrastructure.</span></li>
+                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL5"><strong>Infrastructure analysis</strong> — subdomains, certificates, open ports, and services on the perimeter.</span></li>
+                </ul>
+            </div>
+
+            <div class="network-card glass reveal">
+                <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" role="img" id="networkSvg">
+                    <line x1="180" y1="160" x2="60" y2="60" stroke="rgba(79,227,255,.35)" stroke-width="1.4" />
+                    <line x1="180" y1="160" x2="300" y2="55" stroke="rgba(155,107,255,.35)" stroke-width="1.4" />
+                    <line x1="180" y1="160" x2="50" y2="220" stroke="rgba(79,227,255,.35)" stroke-width="1.4" />
+                    <line x1="180" y1="160" x2="305" y2="225" stroke="rgba(255,95,168,.3)" stroke-width="1.4" />
+                    <line x1="180" y1="160" x2="180" y2="270" stroke="rgba(155,107,255,.35)" stroke-width="1.4" />
+                    <line x1="180" y1="160" x2="95" y2="270" stroke="rgba(79,227,255,.25)" stroke-width="1.4" />
+
+                    <circle cx="180" cy="160" r="16" fill="#0A0D17" stroke="#4FE3FF" stroke-width="1.6" />
+                    <circle cx="180" cy="160" r="4" fill="#4FE3FF" />
+                    <text x="180" y="190" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#9AA3B5" id="svgTarget">TARGET</text>
+
+                    <circle cx="60" cy="60" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
+                    <text x="60" y="40" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgSocial">socials</text>
+
+                    <circle cx="300" cy="55" r="10" fill="#0A0D17" stroke="rgba(155,107,255,.7)" stroke-width="1.3" />
+                    <text x="300" y="35" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgDomains">domains</text>
+
+                    <circle cx="50" cy="220" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
+                    <text x="50" y="245" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgRegistries">registries</text>
+
+                    <circle cx="305" cy="225" r="10" fill="#0A0D17" stroke="rgba(255,95,168,.7)" stroke-width="1.3" />
+                    <text x="305" y="250" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgLeaks">leaks</text>
+
+                    <circle cx="180" cy="270" r="10" fill="#0A0D17" stroke="rgba(155,107,255,.7)" stroke-width="1.3" />
+                    <text x="180" y="295" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgForums">forums</text>
+
+                    <circle cx="95" cy="270" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
+                    <text x="95" y="295" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgInfra">infra</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== PROCESS ============================== -->
+    <section class="section" id="process">
+        <div class="container">
+            <div class="section-head center reveal">
+                <span class="eyebrow" data-i18n="processEyebrow">How we work</span>
+                <h2 data-i18n="processTitle">Five steps from request to resolved risk</h2>
+                <p data-i18n="processLead">Sequence matters: each subsequent step is built upon the results of the previous one.</p>
+            </div>
+            <div class="timeline reveal">
+                <div class="timeline-item">
+                    <div class="timeline-num">01</div>
+                    <div class="timeline-card glass"><h3 data-i18n="p1Title">Request & NDA</h3><p data-i18n="p1Desc">We discuss the task, perimeter, and deadlines. We sign a non-disclosure agreement before any work begins.</p></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-num">02</div>
+                    <div class="timeline-card glass"><h3 data-i18n="p2Title">Intelligence</h3><p data-i18n="p2Desc">We collect data from open sources strictly within the boundaries of the approved perimeter.</p></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-num">03</div>
+                    <div class="timeline-card glass"><h3 data-i18n="p3Title">Analysis</h3><p data-i18n="p3Desc">We correlate findings, separate noise from signals, and prioritize risks based on actual potential damage.</p></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-num">04</div>
+                    <div class="timeline-card glass"><h3 data-i18n="p4Title">Report</h3><p data-i18n="p4Desc">We deliver a structured report with an evidentiary base and explicit, actionable recommendations.</p></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-num">05</div>
+                    <div class="timeline-card glass"><h3 data-i18n="p5Title">Support</h3><p data-i18n="p5Desc">We help mitigate discovered risks and, if required, keep your perimeter under continuous monitoring.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== METRICS ============================== -->
+    <section class="section" style="padding-top:0;">
+        <div class="container">
+            <div class="metrics-card glass reveal">
+                <div class="metric">
+                    <div class="metric-number"><span class="stat-number" data-target="420">0</span><span class="suf">+</span></div>
+                    <p class="metric-label" data-i18n="m1Label">completed investigations</p>
+                </div>
+                <div class="metric">
+                    <div class="metric-number"><span class="stat-number" data-target="1200">0</span><span class="suf">+</span></div>
+                    <p class="metric-label" data-i18n="m2Label">monitored sources daily</p>
+                </div>
+                <div class="metric">
+                    <div class="metric-number"><span class="pre">&lt;</span><span class="stat-number" data-target="24">0</span><span class="suf" id="m3Suf">h</span></div>
+                    <p class="metric-label" data-i18n="m3Label">average initial response time</p>
+                </div>
+                <div class="metric">
+                    <div class="metric-number"><span class="stat-number" data-target="100">0</span><span class="suf">%</span></div>
+                    <p class="metric-label" data-i18n="m4Label">of projects executed under NDA</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== TESTIMONIALS ============================== -->
+    <section class="section">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow" data-i18n="testiEyebrow">Testimonials</span>
+                <h2 data-i18n="testiTitle">What those who already verified their perimeter say</h2>
+            </div>
+            <div class="testimonial-grid reveal-stagger">
+                <div class="testimonial-card glass">
+                    <p class="quote" data-i18n="t1Quote">"Following the audit, we closed a data leak we didn't even know existed — an old subdomain containing a test database."</p>
+                    <div class="testimonial-author"><div class="avatar" id="t1Avatar">IR</div><div><div class="name" data-i18n="t1Name">Igor R.</div><div class="role">CISO, e-commerce</div></div></div>
+                </div>
+                <div class="testimonial-card glass">
+                    <p class="quote" data-i18n="t2Quote">"The OSINT report was so comprehensively detailed that we completely restructured our entire employee hiring workflow."</p>
+                    <div class="testimonial-author"><div class="avatar" id="t2Avatar">MS</div><div><div class="name" data-i18n="t2Name">Marina S.</div><div class="role">HRD, fintech startup</div></div></div>
+                </div>
+                <div class="testimonial-card glass">
+                    <p class="quote" data-i18n="t3Quote">"Loved that the report doesn't just scare you with technical jargon, but instead immediately provides a clear plan of action."</p>
+                    <div class="testimonial-author"><div class="avatar" id="t3Avatar">DK</div><div><div class="name" data-i18n="t3Name">Dmitry K.</div><div class="role" data-i18n="t3Role">Founder, legal practice</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== PRICING ============================== -->
+    <section class="section" id="pricing">
+        <div class="container">
+            <div class="section-head center reveal">
+                <span class="eyebrow" data-i18n="pricingEyebrow">Pricing</span>
+                <h2 data-i18n="pricingTitle">A format for any task — from a one-time audit to continuous defense</h2>
+                <p data-i18n="pricingLead">We calculate the exact cost individually after a brief discovery call — no hidden clauses in the contract.</p>
+            </div>
+            <div class="pricing-grid reveal-stagger">
+
+                <div class="price-card glass">
+                    <h3 data-i18n="card1Title">Start</h3>
+                    <p class="price-note" data-i18n="priceIndividual">Individual calculation</p>
+                    <ul class="price-features">
+                        <li data-i18n="c1f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Single target — company, individual, or domain</li>
+                        <li data-i18n="c1f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Report complete with sources and evidence</li>
+                        <li data-i18n="c1f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Basic risk evaluation</li>
+                        <li data-i18n="c1f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Timeline: 5–7 business days</li>
+                        <li data-i18n="c1f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>NDA by default</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-ghost btn-block" data-i18n="btnDiscuss">Discuss project</a>
+                </div>
+
+                <div class="price-card glass popular">
+                    <span class="popular-tag" data-i18n="popularTag">popular choice</span>
+                    <h3 data-i18n="card2Title">Professional</h3>
+                    <p class="price-note" data-i18n="priceIndividual">Individual calculation</p>
+                    <ul class="price-features">
+                        <li data-i18n="c2f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Up to 5 targets under continuous observation</li>
+                        <li data-i18n="c2f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>24/7 leak and shadow forum monitoring</li>
+                        <li data-i18n="c2f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Instant alerts whenever new data surfaces</li>
+                        <li data-i18n="c2f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Monthly summary analytics report</li>
+                        <li data-i18n="c2f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Priority support loop</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary btn-block" data-i18n="btnDiscuss">Discuss project</a>
+                </div>
+
+                <div class="price-card glass">
+                    <h3 data-i18n="card3Title">Corporate</h3>
+                    <p class="price-note" data-i18n="priceOnRequest">Upon request</p>
+                    <ul class="price-features">
+                        <li data-i18n="c3f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Custom tracking perimeter and tailored SLA</li>
+                        <li data-i18n="c3f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Threat Intelligence mapped to your industry</li>
+                        <li data-i18n="c3f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Secure product design experience audit</li>
+                        <li data-i18n="c3f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Dedicated security analyst</li>
+                        <li data-i18n="c3f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Coordinated red team simulation scenarios</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-ghost btn-block" data-i18n="btnDiscuss">Discuss project</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================== CONTACT ============================== -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow" data-i18n="contactEyebrow">Contact</span>
+                <h2 data-i18n="contactTitle">Ready to find out what is visible about you online?</h2>
+                <p data-i18n="contactLead">Describe your task — we will respond within 24 hours and propose an engagement format.</p>
+            </div>
+
+            <div class="contact-grid reveal">
+                <form class="contact-form glass" id="contactForm">
+                    <div id="formFields">
+                        <div class="form-row">
+                            <div class="field">
+                                <label for="name" id="lName">Name</label>
+                                <input id="name" name="name" type="text" placeholder="How to address you" required>
+                            </div>
+                            <div class="field">
+                                <label for="company" id="lCompany">Company</label>
+                                <input id="company" name="company" type="text" placeholder="Optional">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="field">
+                                <label for="contact-channel" id="lChannel">Email or Telegram</label>
+                                <input id="contact-channel" name="contact" type="text" placeholder="you@company.com" required>
+                            </div>
+                            <div class="field">
+                                <label for="task-type" id="lTask">Task Type</label>
+                                <select id="task-type" name="task">
+                                    <!-- Handled dynamically by JS -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="message" id="lMessage">Message</label>
+                            <textarea id="message" name="message" placeholder="Briefly outline your task and deadlines" required></textarea>
+                        </div>
+                        <label class="consent" id="lConsent">
+                            <input type="checkbox" required>
+                            <span>I consent to data processing for feedback purposes. All materials are transmitted via secure channels.</span>
+                        </label>
+                        <button type="submit" class="btn btn-primary btn-block" id="btnSubmit">Submit request<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></button>
+                    </div>
+                    <div class="form-success" id="formSuccess">
+                        <div class="icon-circle"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></div>
+                        <h3 style="font-size:1.2rem;" data-i18n="successTitle">Request received</h3>
+                        <p class="text-secondary" data-i18n="successDesc">We will reply within 24 hours using the provided contact details.</p>
+                        <button class="btn btn-ghost" id="formReset" type="button" data-i18n="successReset">Submit another request</button>
+                    </div>
+                </form>
+
+                <div class="contact-info glass">
+                    <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-mail"></use></svg></div><div><div class="label">Email</div><div class="value">hello@apidevs.io</div></div></div>
+                    <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></div><div><div class="label" data-i18n="infoTimeLabel">Response time</div><div class="value" data-i18n="infoTimeVal">under 24 hours, 7 days a week</div></div></div>
+                    <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg></div><div><div class="label" data-i18n="infoPrivacyLabel">Confidentiality</div><div class="value" data-i18n="infoPrivacyVal">NDA by default for all engagements</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+        
+    <!-- ============================== FOOTER ============================== -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#home" class="logo"><span class="bracket">&lt;</span>API.DEVS<span class="bracket">/&gt;</span></a>
+                    <p data-i18n="footerBrand">Cybersecurity and OSINT studio. We make visible what is hidden online — and design defense solutions that are convenient to use.</p>
+                    <div class="footer-socials">
+                        <a href="https://t.me/CSO_System" class="social-btn glass" aria-label="Telegram">TG</a>
+                        <a href="#" class="social-btn glass" aria-label="LinkedIn">IN</a>
+                        <a href="#" class="social-btn glass" aria-label="GitHub">GH</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="fCol1Title">Services</h4>
+                    <ul>
+                        <li><a href="#services" data-i18n="s1Title">OSINT Investigations</a></li>
+                        <li><a href="#services" data-i18n="s2Title">Digital Footprint Audit</a></li>
+                        <li><a href="#services" data-i18n="s3Title">Leak Monitoring</a></li>
+                        <li><a href="#services" data-i18n="s4Title">Threat Intelligence</a></li>
+                        <li><a href="#services" data-i18n="s6Title">Security by Design</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="fCol2Title">Company</h4>
+                    <ul>
+                        <li><a href="#osint" data-i18n="fCol2L1">Our approach</a></li>
+                        <li><a href="#process" data-i18n="heroCtaGhost">How we work</a></li>
+                        <li><a href="#pricing" data-i18n="navPricing">Pricing</a></li>
+                        <li><a href="#contact" data-i18n="navContact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="navContact">Contact</h4>
+                    <ul>
+                        <li><a href="https://t.me/CSO_System">@СSO_System</a></li>
+                        <li><span class="text-secondary" data-i18n="heroMetaRemote">Remote work, worldwide</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span id="footerCopyright">© 2026 API.DEVS. All rights reserved.</span>
+                <div class="legal">
+                    <a href="#" data-i18n="legalPrivacy">Privacy Policy</a>
+                    <a href="#" data-i18n="legalTerms">Terms of Use</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         (function () {
-            const btn = document.getElementById('menuBtn');
-            const overlay = document.getElementById('overlay');
-            const body = document.body;
+            "use strict";
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-            function open() { body.classList.add('menu-open'); }
-            function close() { body.classList.remove('menu-open'); }
-
-            btn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                open();
-            });
-
-            overlay.addEventListener('click', close);
-
-            // Закрытие при клике на пункт меню
-            document.addEventListener('click', function (e) {
-                const item = e.target.closest('aside a, aside button, nav a, nav button');
-                if (item && body.classList.contains('menu-open')) {
-                    setTimeout(close, 50);
+            /* ---------- Localization Dictionary ---------- */
+            var i18n = {
+                en: {
+                    htmlLang: "en",
+                    pageTitle: "API.DEVS — cybersecurity, OSINT-intelligence and secure design",
+                    skipLink: "Skip to content",
+                    navServices: "Services",
+                    navOsint: "OSINT",
+                    navProcess: "Process",
+                    navPricing: "Pricing",
+                    navContact: "Contact",
+                    navStatus: "MONITORING ACTIVE",
+                    navCta: "Request audit",
+                    heroEyebrow: "API.DEVS · Cybersecurity & OSINT",
+                    heroTitle: 'Making <span class="grad-text">visible</span> what is hidden online',
+                    heroLead: "Cybersecurity and OSINT-intelligence studio. We gather digital footprints, assess attack surfaces, and design defense systems that are convenient for everyday use.",
+                    heroCtaPrimary: 'Request OSINT-audit<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>',
+                    heroCtaGhost: "How we work",
+                    heroMetaNda: "NDA by default",
+                    heroMetaReport: "Report in 5–10 business days",
+                    heroMetaRemote: "Remote work, worldwide",
+                    standardsLabel: "Methodology is built on recognized industrial approaches",
+                    servicesEyebrow: "What we do",
+                    servicesTitle: "Intelligence, defense, and design — in one loop",
+                    servicesLead: "From a one-time audit to continuous perimeter monitoring: we tailor the format to the task, not the other way around.",
+                    s1Title: "OSINT Investigations",
+                    s1Desc: "We collect and verify data from open sources — social networks, forums, registries, leaks — to provide a complete picture of a person, company, or asset before decision making.",
+                    s2Title: "Digital Footprint Audit",
+                    s2Desc: "We reveal what is already known about you and your company online: from old accounts to accidentally exposed infrastructure — and how to close it.",
+                    s3Title: "Leak & Darknet Monitoring",
+                    s3Desc: "We track mentions of your credentials, domains, and employees in data leaks and shadow forums — notifying you before attackers can exploit them.",
+                    s4Title: "Threat Intelligence",
+                    s4Desc: "We transform scattered indicators of compromise into a clear threat map, mapped specifically to your infrastructure and industry.",
+                    s5Title: "Social Engineering & Awareness",
+                    s5Desc: "We test team resilience to phishing and manipulation through controlled scenarios — focusing on education, not intimidation.",
+                    s6Title: "Security by Design",
+                    s6Desc: "We embed security requirements into interfaces and product architecture at the very start — making protection feel like a natural part of the user experience.",
+                    osintEyebrow: "Our primary discipline",
+                    osintTitle: "OSINT — Open Source Intelligence",
+                    osintDesc: "We collect data using legal methods: public profiles, registries, leaks, metadata, infrastructure. The result is a structured report with an evidentiary base, not just a bunch of screenshots.",
+                    osintL1: "<strong>Due diligence</strong> — verification of counterparties, partners, and candidates before a deal or hire.",
+                    osintL2: "<strong>Digital deanonymization</strong> — connecting aliases, accounts, and geotags into a single cohesive profile.",
+                    osintL3: "<strong>Brand monitoring</strong> — fake profiles, phishing domains, leak of internal corporate materials.",
+                    osintL4: "<strong>Competitive intelligence</strong> — public signals about strategy, hiring, and market infrastructure.",
+                    osintL5: "<strong>Infrastructure analysis</strong> — subdomains, certificates, open ports, and services on the perimeter.",
+                    svgTarget: "TARGET",
+                    svgSocial: "socials",
+                    svgDomains: "domains",
+                    svgRegistries: "registries",
+                    svgLeaks: "leaks",
+                    svgForums: "forums",
+                    svgInfra: "infra",
+                    processEyebrow: "How we work",
+                    processTitle: "Five steps from request to resolved risk",
+                    processLead: "Sequence matters: each subsequent step is built upon the results of the previous one.",
+                    p1Title: "Request & NDA",
+                    p1Desc: "We discuss the task, perimeter, and deadlines. We sign a non-disclosure agreement before any work begins.",
+                    p2Title: "Intelligence",
+                    p2Desc: "We collect data from open sources strictly within the boundaries of the approved perimeter.",
+                    p3Title: "Analysis",
+                    p3Desc: "We correlate findings, separate noise from signals, and prioritize risks based on actual potential damage.",
+                    p4Title: "Report",
+                    p4Desc: "We deliver a structured report with an evidentiary base and explicit, actionable recommendations.",
+                    p5Title: "Support",
+                    p5Desc: "We help mitigate discovered risks and, if required, keep your perimeter under continuous monitoring.",
+                    m1Label: "completed investigations",
+                    m2Label: "monitored sources daily",
+                    m3Suf: "h",
+                    m3Label: "average initial response time",
+                    m4Label: "of projects executed under NDA",
+                    testiEyebrow: "Testimonials",
+                    testiTitle: "What those who already verified their perimeter say",
+                    t1Quote: '"Following the audit, we closed a data leak we didn\'t even know existed — an old subdomain containing a test database."',
+                    t1Name: "Igor R.",
+                    t2Quote: '"The OSINT report was so comprehensively detailed that we completely restructured our entire employee hiring workflow."',
+                    t2Name: "Marina S.",
+                    t3Quote: '"Loved that the report doesn\'t just scare you with technical jargon, but instead immediately provides a clear plan of action."',
+                    t3Name: "Dmitry K.",
+                    t3Role: "Founder, legal practice",
+                    pricingEyebrow: "Pricing",
+                    pricingTitle: "A format for any task — from a one-time audit to continuous defense",
+                    pricingLead: "We calculate the exact cost individually after a brief discovery call — no hidden clauses in the contract.",
+                    card1Title: "Start",
+                    priceIndividual: "Individual calculation",
+                    c1f1: "Single target — company, individual, or domain",
+                    c1f2: "Report complete with sources and evidence",
+                    c1f3: "Basic risk evaluation",
+                    c1f4: "Timeline: 5–7 business days",
+                    c1f5: "NDA by default",
+                    btnDiscuss: "Discuss project",
+                    popularTag: "popular choice",
+                    card2Title: "Professional",
+                    c2f1: "Up to 5 targets under continuous observation",
+                    c2f2: "24/7 leak and shadow forum monitoring",
+                    c2f3: "Instant alerts whenever new data surfaces",
+                    c2f4: "Monthly summary analytics report",
+                    c2f5: "Priority support loop",
+                    card3Title: "Corporate",
+                    priceOnRequest: "Upon request",
+                    c3f1: "Custom tracking perimeter and tailored SLA",
+                    c3f2: "Threat Intelligence mapped to your industry",
+                    c3f3: "Secure product design experience audit",
+                    c3f4: "Dedicated security analyst",
+                    c3f5: "Coordinated red team simulation scenarios",
+                    contactEyebrow: "Contact",
+                    contactTitle: "Ready to find out what is visible about you online?",
+                    contactLead: "Describe your task — we will respond within 24 hours and propose an engagement format.",
+                    lName: "Name",
+                    pName: "How to address you",
+                    lCompany: "Company",
+                    pCompany: "Optional",
+                    lChannel: "Email or Telegram",
+                    pChannel: "you@company.com",
+                    lTask: "Task Type",
+                    options: ["OSINT Investigation", "Digital Footprint Audit", "Data Leak Monitoring", "Secure Product Design", "Other"],
+                    lMessage: "Message",
+                    pMessage: "Briefly outline your task and deadlines",
+                    lConsent: "I consent to data processing for feedback purposes. All materials are transmitted via secure channels.",
+                    btnSubmit: 'Submit request<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>',
+                    successTitle: "Request received",
+                    successDesc: "We will reply within 24 hours using the provided contact details.",
+                    successReset: "Submit another request",
+                    infoTimeLabel: "Response time",
+                    infoTimeVal: "under 24 hours, 7 days a week",
+                    infoPrivacyLabel: "Confidentiality",
+                    infoPrivacyVal: "NDA by default for all engagements",
+                    footerBrand: "Cybersecurity and OSINT studio. We make visible what is hidden online — and design defense solutions that are convenient to use.",
+                    fCol1Title: "Services",
+                    fCol2Title: "Company",
+                    fCol2L1: "Our approach",
+                    footerCopyright: "© 2026 API.DEVS. All rights reserved.",
+                    legalPrivacy: "Privacy Policy",
+                    legalTerms: "Terms of Use",
+                    scanPrompt: "target",
+                    scanLabel: "scan",
+                    scanSources: "Sources",
+                    scanLeaks: "Leaks",
+                    scanRiskText: "Risk",
+                    scenarios: [
+                        {
+                            target: 'ivanov-holdings.com',
+                            steps: ['OSINT discovery and public record harvesting', 'Infrastructure and network perimeter mapping', 'Credential leak and dump database validation', 'Social relationship graph and profile linking'],
+                            sources: 17, leaks: 2, risk: 'medium risk', riskClass: 'risk-medium'
+                        },
+                        {
+                            target: 'individual · a.kovalenko',
+                            steps: ['Open-source digital footprint profiling', 'Exif and image geotag correlation analysis', 'Alias tracking across legacy online communities', 'Deanonymization threshold exposure indexing'],
+                            sources: 9, leaks: 0, risk: 'low risk', riskClass: 'risk-low'
+                        },
+                        {
+                            target: 'novatech-corp.io',
+                            steps: ['Attack surface reconnaissance mapping', 'Deep web breach corpus and intelligence parsing', 'Employee credential compromise indexing', 'Brand exposure and impersonation evaluation'],
+                            sources: 23, leaks: 5, risk: 'high risk', riskClass: 'risk-high'
+                        }
+                    ]
+                },
+                uk: {
+                    htmlLang: "uk",
+                    pageTitle: "API.DEVS — кібербезпека, OSINT-розвідка та безпечний дизайн",
+                    skipLink: "Перейти до вмісту",
+                    navServices: "Послуги",
+                    navOsint: "OSINT",
+                    navProcess: "Процес",
+                    navPricing: "Тарифи",
+                    navContact: "Контакти",
+                    navStatus: "МОНІТОРИНГ АКТИВНИЙ",
+                    navCta: "Запросити аудит",
+                    heroEyebrow: "API.DEVS · Кібербезпека & OSINT",
+                    heroTitle: 'Робимо <span class="grad-text">видимим</span> те, що приховано в мережі',
+                    heroLead: "Студія кібербезпеки та OSINT-розвідки. Збираємо цифрові сліди, оцінюємо поверхню атаки та проектуємо захист, яким зручно користуватися щодня.",
+                    heroCtaPrimary: 'Запросити OSINT-аудит<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>',
+                    heroCtaGhost: "Як ми працюємо",
+                    heroMetaNda: "NDA за замовчуванням",
+                    heroMetaReport: "Звіт за 5–10 робочих днів",
+                    heroMetaRemote: "Працюємо віддалено, по всьому світу",
+                    standardsLabel: "Методологія будується на визнаних індустріальних підходах",
+                    servicesEyebrow: "Що ми робимо",
+                    servicesTitle: "Розвідка, захист та дизайн — в одному контурі",
+                    servicesLead: "Від разового аудиту до постійного спостереження за периметром: підбираємо формат під задачу, а не навпаки.",
+                    s1Title: "OSINT-розслідування",
+                    s1Desc: "Збираємо та верифікуємо дані з відкритих джерел — соцмережі, форуми, реєстри, витоки — щоб надати повну картину про людину, компанію чи актив до прийняття рішень.",
+                    s2Title: "Аудит цифрового сліду",
+                    s2Desc: "Показуємо, що про вас та компанію вже відомо в мережі: від старих акаунтів до випадково засвіченої інфраструктури — і як це закрити.",
+                    s3Title: "Моніторинг витоків та даркнету",
+                    s3Desc: "Стежимо за згадками ваших даних, доменів та співробітників у витоках та на тіньових форумах — і сповіщаємо раніше, ніж цим скористаються зловмисники.",
+                    s4Title: "Threat Intelligence",
+                    s4Desc: "Перетворюємо розрізнені індикатори компрометації на зрозумілу карту загроз, прив'язану до вашої інфраструктури та галузі.",
+                    s5Title: "Соціальна інженерія та обізнаність",
+                    s5Desc: "Перевіряємо стійкість команди до фішингу та маніпуляцій через контрольовані сценарії — з фокусом на навчання, а не на залякування.",
+                    s6Title: "Безпека за дизайном",
+                    s6Desc: "Вбудовуємо вимоги безпеки в інтерфейси та архітектуру продукту на старті — щоб захист відчувався природною частиною досвіду користувача.",
+                    osintEyebrow: "Наша основна дисципліна",
+                    osintTitle: "OSINT — розвідка за відкритими джерелами",
+                    osintDesc: "Ми збираємо дані легальними методами: публічні профілі, реєстри, витоки, метадані, інфраструктура. Результат — структурований звіт із доказовою базою, а не набір скріншотів.",
+                    osintL1: "<strong>Due diligence</strong> — перевірка контрагентів, партнерів та кандидатів перед угодою чи наймом.",
+                    osintL2: "<strong>Цифрова деанонімізація</strong> — пов'язуємо псевдоніми, акаунти та геомітки в єдиний профіль.",
+                    osintL3: "<strong>Бренд-моніторинг</strong> — підроблені профілі, фішингові домени, витік внутрішніх матеріалів.",
+                    osintL4: "<strong>Конкурентна розвідка</strong> — публічні сигнали про стратегію, найм та інфраструктуру ринку.",
+                    osintL5: "<strong>Аналіз інфраструктури</strong> — піддомени, сертифікати, відкриті порти та сервіси на периметрі.",
+                    svgTarget: "ЦІЛЬ",
+                    svgSocial: "соцмережі",
+                    svgDomains: "домени",
+                    svgRegistries: "реєстри",
+                    svgLeaks: "витоки",
+                    svgForums: "форуми",
+                    svgInfra: "інфра",
+                    processEyebrow: "Як ми працюємо",
+                    processTitle: "П'ять кроків від заявки до закритого ризику",
+                    processLead: "Порядок має значення: кожен наступний крок спирається на результат попереднього.",
+                    p1Title: "Заявка та NDA",
+                    p1Desc: "Обговорюємо задачу, периметр та терміни. Підписуємо угоду про конфіденційність до початку робіт.",
+                    p2Title: "Розвідка",
+                    p2Desc: "Збираємо дані з відкритих джерел суворо в межах затвердженого периметру.",
+                    p3Title: "Аналіз",
+                    p3Desc: "Зіставляємо знахідки, відокремлюємо шум від сигналу та пріоритезуємо ризики за реальною шкодою.",
+                    p4Title: "Звіт",
+                    p4Desc: "Передаємо структурований звіт із доказовою базою та конкретними рекомендаціями.",
+                    p5Title: "Підтримка",
+                    p5Desc: "Допомагаємо закрити знайдені ризики і, за необхідності, тримаємо периметр під спостереженням.",
+                    m1Label: "завершених розслідувань",
+                    m2Label: "джерел у моніторингу щодня",
+                    m3Suf: "г",
+                    m3Label: "середній час першої реакції",
+                    m4Label: "проектів виконуються під NDA",
+                    testiEyebrow: "Відгуки",
+                    testiTitle: "Що кажуть ті, хто вже перевірив периметр",
+                    t1Quote: "«Після аудиту ми закрили витік, про який навіть не знали — старий піддомен із тестовою базою даних.»",
+                    t1Name: "Ігор Р.",
+                    t2Quote: "«Звіт з OSINT був настільки детальним, що мы повністю переглянули весь процес найму співробітників.»",
+                    t2Name: "Марина С.",
+                    t3Quote: "«Сподобалося, що звіт не лякає термінами, а одразу дає зрозумілий план дій.»",
+                    t3Name: "Дмитро К.",
+                    t3Role: "Засновник, юридична практика",
+                    pricingEyebrow: "Тарифи",
+                    pricingTitle: "Формат під задачу — від разового аудиту до постійного захисту",
+                    pricingLead: "Точну вартість розраховуємо індивідуально після короткого брифінгу — без прихованих пунктів у договорі.",
+                    card1Title: "Старт",
+                    priceIndividual: "Індивідуальний розрахунок",
+                    c1f1: "Один об'єкт перевірки — компанія, фізособа або домен",
+                    c1f2: "Звіт з джерелами та доказами",
+                    c1f3: "Базова оцінка ризику",
+                    c1f4: "Термін: 5–7 робочих днів",
+                    c1f5: "NDA за замовчуванням",
+                    btnDiscuss: "Обговорити проект",
+                    popularTag: "популярний вибір",
+                    card2Title: "Професійний",
+                    c2f1: "До 5 об'єктів під постійним спостереженням",
+                    c2f2: "Моніторинг витоків та тіньових форумів 24/7",
+                    c2f3: "Сповіщення при появі нових даних",
+                    c2f4: "Щомісячний зведений аналітичний звіт",
+                    c2f5: "Пріоритетна підтримка",
+                    card3Title: "Корпоративний",
+                    priceOnRequest: "За запитом",
+                    c3f1: "Індивідуальний периметр та SLA",
+                    c3f2: "Threat Intelligence під вашу галузь",
+                    c3f3: "Аудит безпечного дизайну продукту",
+                    c3f4: "Виділений аналітик",
+                    c3f5: "Сценарії red team за погодженням",
+                    contactEyebrow: "Контакти",
+                    contactTitle: "Готові подивитися, що відомо про вас у мережі?",
+                    contactLead: "Опишіть задачу — відповімо протягом 24 годин і запропонуємо формат роботи.",
+                    lName: "Ім'я",
+                    pName: "Як до вас звертатися",
+                    lCompany: "Компанія",
+                    pCompany: "Необов'язково",
+                    lChannel: "Email або Telegram",
+                    pChannel: "you@company.com",
+                    lTask: "Тип задачі",
+                    options: ["OSINT-розслідування", "Аудит цифрового сліду", "Мониторинг витоків", "Безпечний дизайн продукту", "Інше"],
+                    lMessage: "Повідомлення",
+                    pMessage: "Коротко опишіть задачу та терміни",
+                    lConsent: "Згоден на обробку даних для зворотного зв'язку. Всі матеріали передаються захищеними каналами.",
+                    btnSubmit: 'Надіслати заявку<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>',
+                    successTitle: "Заявку отримано",
+                    successDesc: "Відповімо протягом 24 годин на вказані контакти.",
+                    successReset: "Надіслати ще одну заявку",
+                    infoTimeLabel: "Час відповіді",
+                    infoTimeVal: "до 24 годин, без вихідних",
+                    infoPrivacyLabel: "Конфіденційність",
+                    infoPrivacyVal: "NDA за замовчуванням для всіх проектів",
+                    footerBrand: "Студія кібербезпеки та OSINT-розвідки. Робимо видимим те, що приховано в мережі — і проектуємо захист, яким зручно користуватися.",
+                    fCol1Title: "Послуги",
+                    fCol2Title: "Компанія",
+                    fCol2L1: "Про підхід",
+                    footerCopyright: "© 2026 API.DEVS. Усі права захищені.",
+                    legalPrivacy: "Політика конфіденційності",
+                    legalTerms: "Умови використання",
+                    scanPrompt: "ціль",
+                    scanLabel: "пошук",
+                    scanSources: "Джерела",
+                    scanLeaks: "Витоки",
+                    scanRiskText: "Ризик",
+                    scenarios: [
+                        {
+                            target: 'ivanov-holdings.com',
+                            steps: ['пошук згадок у відкритих джерелах', 'перевірка інфраструктури та піддоменів', 'звірка з базами витоків облікових даних', 'аналіз зв\'язків та соціальних профілів'],
+                            sources: 17, leaks: 2, risk: 'середній ризик', riskClass: 'risk-medium'
+                        },
+                        {
+                            target: 'фізособа · a.kovalenko',
+                            steps: ['пошук цифрового сліду за відкритими джерелами', 'перевірка фото та геометаданих', 'звірка псевдонімів та старих акаунтів', 'оцінка ризику деанонімізації'],
+                            sources: 9, leaks: 0, risk: 'низький ризик', riskClass: 'risk-low'
+                        },
+                        {
+                            target: 'novatech-corp.io',
+                            steps: ['сканування поверхні атаки', 'пошук у дамп-базах та тіньових форумах', 'перевірка співробітників у витоках', 'оценка експозиції бренду'],
+                            sources: 23, leaks: 5, risk: 'високий ризик', riskClass: 'risk-high'
+                        }
+                    ]
+                },
+                ru: {
+                    htmlLang: "ru",
+                    pageTitle: "API.DEVS — кибербезопасность, OSINT-разведка и безопасный дизайн",
+                    skipLink: "Перейти к содержимому",
+                    navServices: "Услуги",
+                    navOsint: "OSINT",
+                    navProcess: "Процесс",
+                    navPricing: "Тарифы",
+                    navContact: "Контакты",
+                    navStatus: "МОНИТОРИНГ АКТИВЕН",
+                    navCta: "Запросить аудит",
+                    heroEyebrow: "API.DEVS · Кибербезопасность & OSINT",
+                    heroTitle: 'Делаем <span class="grad-text">видимым</span> то, что скрыто в сети',
+                    heroLead: "Студия кибербезопасности и OSINT-разведки. Собираем цифровые следы, оцениваем поверхность атаки и проектируем защиту, которой удобно пользоваться каждый день.",
+                    heroCtaPrimary: 'Запросить OSINT-аудит<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>',
+                    heroCtaGhost: "Как мы работаем",
+                    heroMetaNda: "NDA по умолчанию",
+                    heroMetaReport: "Отчёт за 5–10 рабочих дней",
+                    heroMetaRemote: "Работаем удалённо, по всему миру",
+                    standardsLabel: "Методология строится на признанных индустриальных подходах",
+                    servicesEyebrow: "Что мы делаем",
+                    servicesTitle: "Разведка, защита и дизайн — в одном контуре",
+                    servicesLead: "От разового аудита до постоянного наблюдения за периметром: подбираем формат под задачу, а не наоборот.",
+                    s1Title: "OSINT-расследования",
+                    s1Desc: "Собираем и верифицируем данные из открытых источников — соцсети, форумы, реестры, утечки — чтобы дать полную картину человека, компании или актива до принятия решения.",
+                    s2Title: "Аудит цифрового следа",
+                    s2Desc: "Показываем, что о вас и компании уже известно в сети: от старых аккаунтов до случайно засвеченной инфраструктуры — и как это закрыть.",
+                    s3Title: "Мониторинг утечек и даркнета",
+                    s3Desc: "Следим за упоминаниями ваших данных, доменов и сотрудников в утечках и теневых форумах — и оповещаем раньше, чем этим воспользуются злоумышленники.",
+                    s4Title: "Threat Intelligence",
+                    s4Desc: "Превращаем разрозненные индикаторы компрометации в понятную карту угроз, привязанную к вашей инфраструктуре и отрасли.",
+                    s5Title: "Социальная инженерия и осведомленность",
+                    s5Desc: "Проверяем устойчивость команды к фишингу и манипуляциям через контролируемые сценарии — с фокусом на обучение, а не на испуг.",
+                    s6Title: "Безопасность по дизайну",
+                    s6Desc: "Встраиваем требования безопасности в интерфейсы и архитектуру продукта на старте — чтобы защита ощущалась естественной частью опыта.",
+                    osintEyebrow: "Наша основная дисциплина",
+                    osintTitle: "OSINT — разведка по открытым источникам",
+                    osintDesc: "Мы собираем данные легальными методами: публичные профили, реестры, утечки, метаданные, инфраструктура. Результат — структурированный отчёт с доказательной базой, а не набор скриншотов.",
+                    osintL1: "<strong>Due diligence</strong> — проверка контрагентов, партнёров и кандидатов перед сделкой или наймом.",
+                    osintL2: "<strong>Цифровая деанонимизация</strong> — связываем псевдонимы, аккаунты и геометки в единый профиль.",
+                    osintL3: "<strong>Бренд-мониторинг</strong> — поддельные профили, фишинговые домены, утечка внутренних материалов.",
+                    osintL4: "<strong>Конкурентная разведка</strong> — публичные сигналы о стратегии, найме и инфраструктуре рынка.",
+                    osintL5: "<strong>Анализ инфраструктуры</strong> — поддомены, сертификаты, открытые порты и сервисы на периметре.",
+                    svgTarget: "ЦЕЛЬ",
+                    svgSocial: "соцсети",
+                    svgDomains: "домены",
+                    svgRegistries: "реестры",
+                    svgLeaks: "утечки",
+                    svgForums: "форумы",
+                    svgInfra: "инфра",
+                    processEyebrow: "Как мы работаем",
+                    processTitle: "Пять шагов от заявки до закрытого риска",
+                    processLead: "Порядок имеет значение: каждый следующий шаг опирается на результат предыдущего.",
+                    p1Title: "Заявка и NDA",
+                    p1Desc: "Обсуждаем задачу, периметр и сроки. Подписываем соглашение о конфиденциальности до начала работ.",
+                    p2Title: "Разведка",
+                    p2Desc: "Собираем данные из открытых источников строго в рамках утверждённого периметра.",
+                    p3Title: "Анализ",
+                    p3Desc: "Сопоставляем находки, отделяем шум от сигнала и приоритизируем риски по реальному ущербу.",
+                    p4Title: "Отчёт",
+                    p4Desc: "Передаем структурированный отчёт с доказательной базой и конкретными рекомендациями.",
+                    p5Title: "Поддержка",
+                    p5Desc: "Помогаем закрыть найденные риски и, при необходимости, держим периметр под наблюдением.",
+                    m1Label: "завершенных расследований",
+                    m2Label: "источников в мониторинге ежедневно",
+                    m3Suf: "ч",
+                    m3Label: "среднее время первой реакции",
+                    m4Label: "проектов выполняются под NDA",
+                    testiEyebrow: "Отзывы",
+                    testiTitle: "Что говорят те, кто уже проверил периметр",
+                    t1Quote: "«После аудита мы закрыли утечку, о которой даже не знали — старый поддомен с тестовой базой данных.»",
+                    t1Name: "Игорь Р.",
+                    t2Quote: "«Отчёт по OSINT был настолько подробным, что мы пересмотрели весь процесс найма сотрудников.»",
+                    t2Name: "Марина С.",
+                    t3Quote: "«Понравилось, что отчёт не пугает терминами, а сразу даёт понятный план действий.»",
+                    t3Name: "Дмитрий К.",
+                    t3Role: "Основатель, юридическая практика",
+                    pricingEyebrow: "Тарифы",
+                    pricingTitle: "Формат под задачу — от разового аудита до постоянной защиты",
+                    pricingLead: "Точную стоимость рассчитываем индивидуально после короткого брифинга — без скрытых пунктов в договоре.",
+                    card1Title: "Старт",
+                    priceIndividual: "Индивидуальный расчёт",
+                    c1f1: "Один объект проверки — компания, физлицо или домен",
+                    c1f2: "Отчёт с источниками и доказательствами",
+                    c1f3: "Базовая оценка риска",
+                    c1f4: "Срок: 5–7 рабочих дней",
+                    c1f5: "NDA по умолчанию",
+                    btnDiscuss: "Обсудить проект",
+                    popularTag: "популярный выбор",
+                    card2Title: "Профессиональный",
+                    c2f1: "До 5 объектов под постоянным наблюдением",
+                    c2f2: "Мониторинг утечек и теневых форумов 24/7",
+                    c2f3: "Уведомления при появлении новых данных",
+                    c2f4: "Ежемесячный сводный аналитический отчёт",
+                    c2f5: "Приоритетная поддержка",
+                    card3Title: "Корпоративный",
+                    priceOnRequest: "По запросу",
+                    c3f1: "Индивидуальный периметр и SLA",
+                    c3f2: "Threat Intelligence под вашу отрасль",
+                    c3f3: "Аудит безопасного дизайна продукта",
+                    c3f4: "Выделенный аналитик",
+                    c3f5: "Сценарии red team по согласованию",
+                    contactEyebrow: "Контакты",
+                    contactTitle: "Готовы посмотреть, что видно о вас в сети?",
+                    contactLead: "Опишите задачу — ответим в течение 24 часов и предложим формат работы.",
+                    lName: "Имя",
+                    pName: "Как к вам обращаться",
+                    lCompany: "Компания",
+                    pCompany: "Необязательно",
+                    lChannel: "Email или Telegram",
+                    pChannel: "you@company.com",
+                    lTask: "Тип задачи",
+                    options: ["OSINT-расследование", "Аудит цифрового следа", "Мониторинг утечек", "Безопасный дизайн продукта", "Другое"],
+                    lMessage: "Сообщение",
+                    pMessage: "Кратко опишите задачу и сроки",
+                    lConsent: "Согласен на обработку данных для обратной связи. Все материалы передаются по защищённым каналам.",
+                    btnSubmit: 'Отправить заявку<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg>',
+                    successTitle: "Заявка получена",
+                    successDesc: "Ответим в течение 24 часов на указанные контакты.",
+                    successReset: "Отправить ещё одну заявку",
+                    infoTimeLabel: "Время ответа",
+                    infoTimeVal: "до 24 часов, без выходных",
+                    infoPrivacyLabel: "Конфиденциальность",
+                    infoPrivacyVal: "NDA по умолчанию для всех проектов",
+                    footerBrand: "Студия кибербезопасности и OSINT-разведки. Делаем видимым то, что скрыто в сети — и проектируем защиту, которой удобно пользоваться.",
+                    fCol1Title: "Услуги",
+                    fCol2Title: "Компания",
+                    fCol2L1: "О подходе",
+                    footerCopyright: "© 2026 API.DEVS. Все права защищены.",
+                    legalPrivacy: "Политика конфиденциальности",
+                    legalTerms: "Условия использования",
+                    scanPrompt: "цель",
+                    scanLabel: "поиск",
+                    scanSources: "Источники",
+                    scanLeaks: "Утечки",
+                    scanRiskText: "Риск",
+                    scenarios: [
+                        {
+                            target: 'ivanov-holdings.com',
+                            steps: ['поиск упоминаний в открытых источниках', 'проверка инфраструктуры и поддоменов', 'сверка с базами утечек учётных данных', 'анализ связей и социальных профилей'],
+                            sources: 17, leaks: 2, risk: 'средний риск', riskClass: 'risk-medium'
+                        },
+                        {
+                            target: 'физлицо · a.kovalenko',
+                            steps: ['поиск цифрового следа по открытым источникам', 'проверка фото и геометаданных', 'сверка псевдонимов и старых аккаунтов', 'оценка риска деанонимизации'],
+                            sources: 9, leaks: 0, risk: 'низкий риск', riskClass: 'risk-low'
+                        },
+                        {
+                            target: 'novatech-corp.io',
+                            steps: ['сканирование поверхности атаки', 'поиск в дамп-базах и теневых форумах', 'проверка сотрудников в утечках', 'оценка экспозиции бренда'],
+                            sources: 23, leaks: 5, risk: 'высокий риск', riskClass: 'risk-high'
+                        }
+                    ]
                 }
+            };
+
+            var currentLang = 'en'; // Default language
+
+            function setLanguage(lang) {
+                if (!i18n[lang]) return;
+                currentLang = lang;
+                var dict = i18n[lang];
+
+                // Update HTML tag attribute
+                document.documentElement.setAttribute('lang', dict.htmlLang);
+                document.title = dict.pageTitle;
+
+                // Simple data-i18n attributes mapping
+                document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                    var key = el.getAttribute('data-i18n');
+                    if (dict[key]) { el.textContent = dict[key]; }
+                });
+
+                // Complex innerHTML/specific elements mapping
+                document.getElementById('heroTitle').innerHTML = dict.heroTitle;
+                document.getElementById('heroCtaPrimary').innerHTML = dict.heroCtaPrimary;
+                document.getElementById('osintL1').innerHTML = dict.osintL1;
+                document.getElementById('osintL2').innerHTML = dict.osintL2;
+                document.getElementById('osintL3').innerHTML = dict.osintL3;
+                document.getElementById('osintL4').innerHTML = dict.osintL4;
+                document.getElementById('osintL5').innerHTML = dict.osintL5;
+                document.getElementById('m3Suf').textContent = dict.m3Suf;
+                document.getElementById('footerCopyright').textContent = dict.footerCopyright;
+
+                // Update Form Elements Labels/Placeholders
+                document.getElementById('lName').textContent = dict.lName;
+                document.getElementById('name').placeholder = dict.pName;
+                document.getElementById('lCompany').textContent = dict.lCompany;
+                document.getElementById('company').placeholder = dict.pCompany;
+                document.getElementById('lChannel').textContent = dict.lChannel;
+                document.getElementById('contact-channel').placeholder = dict.pChannel;
+                document.getElementById('lTask').textContent = dict.lTask;
+                document.getElementById('lMessage').textContent = dict.lMessage;
+                document.getElementById('message').placeholder = dict.pMessage;
+                document.getElementById('lConsent').querySelector('span').textContent = dict.lConsent;
+                document.getElementById('btnSubmit').innerHTML = dict.btnSubmit;
+
+                // Rebuild Form Select Options
+                var selectTask = document.getElementById('task-type');
+                var currentIdx = selectTask.selectedIndex >= 0 ? selectTask.selectedIndex : 0;
+                selectTask.innerHTML = '';
+                dict.options.forEach(function (opt) {
+                    var o = document.createElement('option');
+                    o.textContent = opt;
+                    selectTask.appendChild(o);
+                });
+                selectTask.selectedIndex = currentIdx;
+
+                // SVG Text nodes updates
+                document.getElementById('svgTarget').textContent = dict.svgTarget;
+                document.getElementById('svgSocial').textContent = dict.svgSocial;
+                document.getElementById('svgDomains').textContent = dict.svgDomains;
+                document.getElementById('svgRegistries').textContent = dict.svgRegistries;
+                document.getElementById('svgLeaks').textContent = dict.svgLeaks;
+                document.getElementById('svgForums').textContent = dict.svgForums;
+                document.getElementById('svgInfra').textContent = dict.svgInfra;
+
+                // Sync dropdown values
+                document.getElementById('langSelect').value = lang;
+            }
+
+            // Language Selector Change Event
+            document.getElementById('langSelect').addEventListener('change', function (e) {
+                setLanguage(e.target.value);
             });
+
+            // Initialize to English default
+            setLanguage('en');
+
+
+            /* ---------- Header scroll state ---------- */
+            var header = document.getElementById('siteHeader');
+            function onScroll() {
+                if (window.scrollY > 12) { header.classList.add('scrolled'); }
+                else { header.classList.remove('scrolled'); }
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+
+            /* ---------- Mobile menu ---------- */
+            var menuToggle = document.getElementById('menuToggle');
+            var mobileNav = document.getElementById('mobileNav');
+            function closeMenu() {
+                mobileNav.classList.remove('is-open');
+                menuToggle.classList.remove('is-open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            }
+            function openMenu() {
+                mobileNav.classList.add('is-open');
+                menuToggle.classList.add('is-open');
+                menuToggle.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden';
+            }
+            menuToggle.addEventListener('click', function () {
+                if (mobileNav.classList.contains('is-open')) { closeMenu(); } else { openMenu(); }
+            });
+            mobileNav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeMenu(); } });
+
+            /* ---------- Scroll reveal ---------- */
+            var revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+            if ('IntersectionObserver' in window && !reduceMotion) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                            io.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+                revealEls.forEach(function (el) { io.observe(el); });
+            } else {
+                revealEls.forEach(function (el) { el.classList.add('in-view'); });
+            }
+
+            /* ---------- Counters ---------- */
+            var counters = document.querySelectorAll('.stat-number');
+            function animateCounter(el) {
+                var target = parseInt(el.getAttribute('data-target'), 10) || 0;
+                if (reduceMotion) { el.textContent = target; return; }
+                var start = 0, duration = 1400, startTime = null;
+                function step(ts) {
+                    if (!startTime) startTime = ts;
+                    var progress = Math.min((ts - startTime) / duration, 1);
+                    var eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.floor(start + (target - start) * eased);
+                    if (progress < 1) { requestAnimationFrame(step); } else { el.textContent = target; }
+                }
+                requestAnimationFrame(step);
+            }
+            if ('IntersectionObserver' in window) {
+                var counterIo = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            animateCounter(entry.target);
+                            counterIo.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: .4 });
+                counters.forEach(function (el) { counterIo.observe(el); });
+            } else {
+                counters.forEach(animateCounter);
+            }
+
+            /* ---------- Hero live scan widget ---------- */
+            var scanTarget = document.getElementById('scanTarget');
+            var scanLines = document.getElementById('scanLines');
+            var scanResults = document.getElementById('scanResults');
+
+            function clearChildren(node) { while (node.firstChild) { node.removeChild(node.firstChild); } }
+            function wait(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
+
+            function renderStatic(scenario, dict) {
+                scanTarget.innerHTML = '<span class="prompt">&gt;</span>' + dict.scanPrompt + ': ' + scenario.target;
+                clearChildren(scanLines);
+                scenario.steps.forEach(function (stepText) {
+                    var line = document.createElement('div');
+                    line.className = 'scan-line is-shown';
+                    line.innerHTML = '<span class="label">&gt; ' + stepText + '</span><div class="scan-bar"><i style="width:100%"></i></div>';
+                    scanLines.appendChild(line);
+                });
+                clearChildren(scanResults);
+                scanResults.classList.add('is-shown');
+                scanResults.innerHTML =
+                    '<span class="chip">' + dict.scanSources + ': ' + scenario.sources + '</span>' +
+                    '<span class="chip">' + dict.scanLeaks + ': ' + scenario.leaks + '</span>' +
+                    '<span class="chip ' + scenario.riskClass + '">' + dict.scanRiskText + ': ' + scenario.risk + '</span>';
+            }
+
+            var scanTimeoutId = null;
+
+            async function runScan(index) {
+                var dict = i18n[currentLang];
+                var scenario = dict.scenarios[index % dict.scenarios.length];
+                scanTarget.innerHTML = '<span class="prompt">&gt;</span>' + dict.scanPrompt + ': ' + scenario.target;
+                clearChildren(scanLines);
+                scanResults.classList.remove('is-shown');
+                clearChildren(scanResults);
+
+                for (var i = 0; i < scenario.steps.length; i++) {
+                    var line = document.createElement('div');
+                    line.className = 'scan-line';
+                    line.innerHTML = '<span class="label">&gt; ' + scenario.steps[i] + '</span><div class="scan-bar"><i></i></div>';
+                    scanLines.appendChild(line);
+                    await wait(40);
+                    line.classList.add('is-shown');
+                    var bar = line.querySelector('.scan-bar i');
+                    await wait(60);
+                    bar.style.width = '100%';
+                    await wait(750);
+                }
+
+                scanResults.innerHTML =
+                    '<span class="chip">' + dict.scanSources + ': ' + scenario.sources + '</span>' +
+                    '<span class="chip">' + dict.scanLeaks + ': ' + scenario.leaks + '</span>' +
+                    '<span class="chip ' + scenario.riskClass + '">' + dict.scanRiskText + ': ' + scenario.risk + '</span>';
+                await wait(50);
+                scanResults.classList.add('is-shown');
+
+                await wait(3600);
+
+                var allLines = scanLines.querySelectorAll('.scan-line');
+                allLines.forEach(function (l) { l.classList.remove('is-shown'); });
+                scanResults.classList.remove('is-shown');
+                await wait(450);
+
+                runScan(index + 1);
+            }
+
+            if (scanTarget && scanLines && scanResults) {
+                if (reduceMotion) {
+                    renderStatic(i18n[currentLang].scenarios[0], i18n[currentLang]);
+                } else {
+                    runScan(0);
+                }
+            }
+
+            /* ---------- Contact form (front-end demo) ---------- */
+            var form = document.getElementById('contactForm');
+            var formFields = document.getElementById('formFields');
+            var formSuccess = document.getElementById('formSuccess');
+            var formReset = document.getElementById('formReset');
+
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    formFields.classList.add('is-hidden');
+                    formSuccess.classList.add('is-shown');
+                });
+            }
+            if (formReset) {
+                formReset.addEventListener('click', function () {
+                    form.reset();
+                    formSuccess.classList.remove('is-shown');
+                    formFields.classList.remove('is-hidden');
+                });
+            }
         })();
     </script>
+
 </body>
 </html>
-
