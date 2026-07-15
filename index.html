@@ -286,16 +286,49 @@ header.scrolled .nav-pill{background:rgba(8,10,18,.65);border-color:var(--glass-
 /* ============================================================
    Reveal on scroll
    ============================================================ */
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease), transform .7s var(--ease);}
-.reveal.in-view{opacity:1;transform:translateY(0);}
-.reveal-stagger > *{opacity:0;transform:translateY(22px);transition:opacity .6s var(--ease), transform .6s var(--ease);}
-.reveal-stagger.in-view > *{opacity:1;transform:translateY(0);}
+--spring:cubic-bezier(.22,1.42,.36,1);
+.reveal{opacity:0;transform:translateY(28px) scale(.985);transition:opacity .8s var(--spring), transform .8s var(--spring);}
+.reveal.in-view{opacity:1;transform:translateY(0) scale(1);}
+.reveal-stagger > *{opacity:0;transform:translateY(28px) scale(.98);transition:opacity .7s var(--spring), transform .7s var(--spring);}
+.reveal-stagger.in-view > *{opacity:1;transform:translateY(0) scale(1);}
 .reveal-stagger.in-view > *:nth-child(1){transition-delay:0s;}
 .reveal-stagger.in-view > *:nth-child(2){transition-delay:.08s;}
 .reveal-stagger.in-view > *:nth-child(3){transition-delay:.16s;}
 .reveal-stagger.in-view > *:nth-child(4){transition-delay:.24s;}
 .reveal-stagger.in-view > *:nth-child(5){transition-delay:.32s;}
 .reveal-stagger.in-view > *:nth-child(6){transition-delay:.4s;}
+
+/* ============================================================
+   Motion layer — cursor glow, 3D tilt cards, magnetic buttons
+   ============================================================ */
+.cursor-glow{
+  position:fixed;top:0;left:0;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:2;
+  background:radial-gradient(circle,rgba(var(--accent-cyan-rgb),.10),rgba(var(--accent-violet-rgb),.06) 45%,transparent 72%);
+  transform:translate(-50%,-50%);mix-blend-mode:screen;opacity:0;transition:opacity .4s var(--ease);will-change:transform;
+}
+.cursor-glow.is-active{opacity:1;}
+@media (max-width:880px), (hover:none){.cursor-glow{display:none;}}
+
+.tilt{perspective:1200px;}
+.tilt-inner{
+  position:relative;transform-style:preserve-3d;
+  transition:transform .5s var(--spring), box-shadow .5s var(--ease);
+  will-change:transform;
+}
+.tilt-inner::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(120deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 28%);
+  opacity:0;transition:opacity .4s var(--ease);mix-blend-mode:overlay;
+}
+.tilt:hover .tilt-inner::before{opacity:1;}
+.tilt-inner > *{transform:translateZ(18px);}
+
+.btn-magnetic{transition:transform .35s var(--spring), box-shadow .35s var(--ease), background .35s var(--ease);}
+
+@media (prefers-reduced-motion: reduce){
+  .cursor-glow{display:none;}
+  .tilt-inner{transition:none;transform:none !important;}
+}
 
 /* ============================================================
    Services
@@ -421,427 +454,685 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
 .footer-bottom .legal{display:flex;gap:1.4rem;}
 @media (max-width:880px){.footer-grid{grid-template-columns:1fr 1fr;}}
 @media (max-width:560px){.footer-grid{grid-template-columns:1fr;}.footer-bottom{flex-direction:column;align-items:flex-start;}}
+
+    /* ============================================================
+   OSINT 3D Preloader Styles
+   ============================================================ */
+    .preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background-color: #03050a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        font-family: var(--font-mono);
+        transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s;
+    }
+
+        .preloader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+    .preloader-bg-noise {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(79, 227, 255, 0.03) 1px, transparent 0);
+        background-size: 24px 24px;
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    .preloader-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 600px;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    /* 3D Canvas Container */
+    .preloader-canvas-container {
+        position: relative;
+        width: 280px;
+        height: 280px;
+        margin-bottom: 2rem;
+    }
+
+    #preloader-3d-canvas {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 0 15px rgba(79, 227, 255, 0.35));
+    }
+
+    .preloader-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(155, 107, 255, 0.15) 0%, rgba(79, 227, 255, 0.05) 50%, transparent 100%);
+        filter: blur(10px);
+        pointer-events: none;
+        z-index: -1;
+        animation: pulseglow 4s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseglow {
+        0% {
+            transform: translate(-50%, -50%) scale(0.9);
+            opacity: 0.6;
+        }
+
+        100% {
+            transform: translate(-50%, -50%) scale(1.1);
+            opacity: 1;
+        }
+    }
+
+    /* Preloader Info & Terminal */
+    .preloader-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .preloader-logo {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        color: var(--text-primary);
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+        .preloader-logo .bracket {
+            color: var(--accent-cyan);
+        }
+
+    .preloader-status-container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .preloader-spinner-ring {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(79, 227, 255, 0.15);
+        border-top-color: var(--accent-cyan);
+        border-radius: 50%;
+        animation: preloader-spin 0.8s linear infinite;
+    }
+
+    @keyframes preloader-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .preloader-status {
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        color: var(--accent-cyan);
+        font-weight: 500;
+        text-shadow: 0 0 8px rgba(79, 227, 255, 0.3);
+    }
+
+    /* Консоль логов (Эффект дешифрования OSINT) */
+    .preloader-terminal {
+        background: rgba(10, 13, 23, 0.75);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        width: 100%;
+        max-width: 420px;
+        height: 94px;
+        text-align: left;
+        box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        overflow: hidden;
+    }
+
+    .terminal-line {
+        font-size: 0.75rem;
+        line-height: 1.5;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.25rem;
+    }
+
+        .terminal-line:last-child {
+            margin-bottom: 0;
+        }
+
+    .preloader-auto-status {
+        position: absolute;
+        bottom: 2.5rem;
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+        letter-spacing: 0.15em;
+        opacity: 0.5;
+        text-transform: uppercase;
+    }
+
+    #skip-timer {
+        color: var(--accent-cyan);
+        font-weight: 600;
+    }
+
+    .skip-timer {
+        color: var(--accent-cyan);
+        background: rgba(79, 227, 255, 0.1);
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    /* Блокировка прокрутки контента пока идет загрузка */
+    body.preloader-active {
+        overflow: hidden !important;
+        height: 100vh !important;
+    }
+
 </style>
 </head>
 <body>
+    <div id="osint-preloader" class="preloader">
+        <div class="preloader-bg-noise"></div>
+        <div class="preloader-content">
 
-<a href="#main" class="skip-link" data-i18n="skipLink">Skip to content</a>
+            <div class="preloader-canvas-container">
+                <canvas id="preloader-3d-canvas"></canvas>
+                <div class="preloader-glow"></div>
+            </div>
 
-<div class="ambient" aria-hidden="true">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
+            <div class="preloader-info">
+                <div class="preloader-logo">
+                    <span class="bracket">[</span>API.DEVS<span class="bracket">]</span>
+                </div>
+                <div class="preloader-status-container">
+                    <div class="preloader-spinner-ring"></div>
+                    <div class="preloader-status" id="preloader-status-text">INITIALIZING SYSTEM...</div>
+                </div>
 
-<!-- Icon sprite -->
-<svg style="display:none" aria-hidden="true">
-<defs>
-  <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><circle cx="10" cy="10" r="1.3" fill="currentColor" stroke="none"/><line x1="14.6" y1="14.6" x2="21" y2="21"/></symbol>
-  <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 L19 6 V11 C19 16 16 19.5 12 21 C8 19.5 5 16 5 11 V6 Z"/><path d="M8.5 12 L11 14.5 L15.5 9.5"/></symbol>
-  <symbol id="icon-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="6" opacity=".6"/><circle cx="12" cy="12" r="10" opacity=".3"/><line x1="12" y1="12" x2="19.5" y2="6.5"/></symbol>
-  <symbol id="icon-network" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/><line x1="12" y1="12" x2="6" y2="6.6"/><line x1="12" y1="12" x2="18" y2="6.6"/><line x1="12" y1="12" x2="6" y2="17.4"/><line x1="12" y1="12" x2="18" y2="17.4"/></symbol>
-  <symbol id="icon-chat-alert" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="3"/><path d="M8 17 L6 21 L11.5 17"/><line x1="12" y1="9" x2="12" y2="12.2"/><circle cx="12" cy="14.4" r=".7" fill="currentColor" stroke="none"/></symbol>
-  <symbol id="icon-layers" viewBox="0 0 24 24"><path d="M12 3 L21 8 L12 13 L3 8 Z"/><path d="M3 12 L12 17 L21 12"/><path d="M3 16 L12 21 L21 16"/></symbol>
-  <symbol id="icon-check" viewBox="0 0 24 24"><path d="M5 13 L9.5 17.5 L19 7"/></symbol>
-  <symbol id="icon-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><path d="M13 6 L19 12 L13 18"/></symbol>
-  <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7 L12 13 L21 7"/></symbol>
-  <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7 V12 L16 14"/></symbol>
-  <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></symbol>
-  <symbol id="icon-fingerprint" viewBox="0 0 24 24"><path d="M12 4 a8 8 0 0 1 8 8 v3"/><path d="M12 4 a8 8 0 0 0 -8 8 v3"/><path d="M12 8 a4 4 0 0 1 4 4 v4"/><path d="M12 8 a4 4 0 0 0 -4 4 v2"/><line x1="12" y1="12" x2="12" y2="17"/></symbol>
-</defs>
-</svg>
+                <div class="preloader-terminal">
+                    <div class="terminal-line" id="term-l1">> CONNECTING TO NODE INTERFACE...</div>
+                    <div class="terminal-line" id="term-l2"></div>
+                    <div class="terminal-line" id="term-l3"></div>
+                </div>
+            </div>
 
-<!-- ============================== HEADER ============================== -->
-<header id="siteHeader">
-  <nav class="nav-pill" aria-label="Main navigation">
-    <a href="#home" class="logo"><span class="bracket">&lt;</span>API.DEVS<span class="bracket">/&gt;</span></a>
-    <ul class="nav-links">
-      <li><a href="#services" data-i18n="navServices">Services</a></li>
-      <li><a href="#osint" data-i18n="navOsint">OSINT</a></li>
-      <li><a href="#process" data-i18n="navProcess">Process</a></li>
-      <li><a href="#pricing" data-i18n="navPricing">Pricing</a></li>
-      <li><a href="#contact" data-i18n="navContact">Contact</a></li>
-    </ul>
-    <div class="nav-cta">
-      <span class="status-dot-wrap"><span class="pulse-dot"></span><span data-i18n="navStatus">MONITORING ACTIVE</span></span>
-      
-      <!-- Language Chooser -->
-      <div class="lang-selector">
-        <select class="lang-select" id="langSelect" aria-label="Select Language">
-          <option value="en">EN</option>
-          <option value="uk">UK</option>
-          <option value="ru">RU</option>
-        </select>
-      </div>
-
-      <a href="https://t.me/CSO_System" class="btn btn-primary" data-i18n="navCta">Request audit</a>
-      <button class="hamburger" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
-        <span></span><span></span><span></span>
-      </button>
+            <div class="preloader-auto-status">
+                AUTOMATIC BYPASS IN <span id="skip-timer">7s</span>
+            </div>
+        </div>
     </div>
-  </nav>
-</header>
 
-<div class="mobile-nav" id="mobileNav">
-  <a href="#services" data-i18n="navServices">Services</a>
-  <a href="#osint" data-i18n="navOsint">OSINT</a>
-  <a href="#process" data-i18n="navProcess">Process</a>
-  <a href="#pricing" data-i18n="navPricing">Pricing</a>
-  <a href="#contact" data-i18n="navContact">Contact</a>
-  <a href="#contact" class="btn btn-primary" data-i18n="navCta">Request audit</a>
-</div>
+    <a href="#main" class="skip-link" data-i18n="skipLink">Skip to content</a>
 
-<main id="main">
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
-    <!-- ============================== HERO ============================== -->
-    <section class="hero" id="home">
-        <div class="container hero-grid">
-            <div class="hero-text">
-                <span class="eyebrow" data-i18n="heroEyebrow">API.DEVS · Cybersecurity & OSINT</span>
-                <h1 id="heroTitle">Making <span class="grad-text">visible</span> what is hidden online</h1>
-                <p class="lead" data-i18n="heroLead">Cybersecurity and OSINT-intelligence studio. We gather digital footprints, assess attack surfaces, and design defense systems that are convenient for everyday use.</p>
-                <div class="hero-cta">
-                    <a href="#contact" class="btn btn-primary" id="heroCtaPrimary">Request OSINT-audit<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></a>
-                    <a href="#process" class="btn btn-ghost" data-i18n="heroCtaGhost">How we work</a>
+    <div class="ambient" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Icon sprite -->
+    <svg style="display:none" aria-hidden="true">
+        <defs>
+            <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6" /><circle cx="10" cy="10" r="1.3" fill="currentColor" stroke="none" /><line x1="14.6" y1="14.6" x2="21" y2="21" /></symbol>
+            <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 L19 6 V11 C19 16 16 19.5 12 21 C8 19.5 5 16 5 11 V6 Z" /><path d="M8.5 12 L11 14.5 L15.5 9.5" /></symbol>
+            <symbol id="icon-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="6" opacity=".6" /><circle cx="12" cy="12" r="10" opacity=".3" /><line x1="12" y1="12" x2="19.5" y2="6.5" /></symbol>
+            <symbol id="icon-network" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2" /><circle cx="18" cy="6" r="2" /><circle cx="6" cy="18" r="2" /><circle cx="18" cy="18" r="2" /><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none" /><line x1="12" y1="12" x2="6" y2="6.6" /><line x1="12" y1="12" x2="18" y2="6.6" /><line x1="12" y1="12" x2="6" y2="17.4" /><line x1="12" y1="12" x2="18" y2="17.4" /></symbol>
+            <symbol id="icon-chat-alert" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="3" /><path d="M8 17 L6 21 L11.5 17" /><line x1="12" y1="9" x2="12" y2="12.2" /><circle cx="12" cy="14.4" r=".7" fill="currentColor" stroke="none" /></symbol>
+            <symbol id="icon-layers" viewBox="0 0 24 24"><path d="M12 3 L21 8 L12 13 L3 8 Z" /><path d="M3 12 L12 17 L21 12" /><path d="M3 16 L12 21 L21 16" /></symbol>
+            <symbol id="icon-check" viewBox="0 0 24 24"><path d="M5 13 L9.5 17.5 L19 7" /></symbol>
+            <symbol id="icon-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" /><path d="M13 6 L19 12 L13 18" /></symbol>
+            <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7 L12 13 L21 7" /></symbol>
+            <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7 V12 L16 14" /></symbol>
+            <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11 V8 a4 4 0 0 1 8 0 V11" /></symbol>
+            <symbol id="icon-fingerprint" viewBox="0 0 24 24"><path d="M12 4 a8 8 0 0 1 8 8 v3" /><path d="M12 4 a8 8 0 0 0 -8 8 v3" /><path d="M12 8 a4 4 0 0 1 4 4 v4" /><path d="M12 8 a4 4 0 0 0 -4 4 v2" /><line x1="12" y1="12" x2="12" y2="17" /></symbol>
+        </defs>
+    </svg>
+
+    <!-- ============================== HEADER ============================== -->
+    <header id="siteHeader">
+        <nav class="nav-pill" aria-label="Main navigation">
+            <a href="#home" class="logo"><span class="bracket">&lt;</span>API.DEVS<span class="bracket">/&gt;</span></a>
+            <ul class="nav-links">
+                <li><a href="#services" data-i18n="navServices">Services</a></li>
+                <li><a href="#osint" data-i18n="navOsint">OSINT</a></li>
+                <li><a href="#process" data-i18n="navProcess">Process</a></li>
+                <li><a href="#pricing" data-i18n="navPricing">Pricing</a></li>
+                <li><a href="#contact" data-i18n="navContact">Contact</a></li>
+            </ul>
+            <div class="nav-cta">
+                <span class="status-dot-wrap"><span class="pulse-dot"></span><span data-i18n="navStatus">MONITORING ACTIVE</span></span>
+
+                <!-- Language Chooser -->
+                <div class="lang-selector">
+                    <select class="lang-select" id="langSelect" aria-label="Select Language">
+                        <option value="en">EN</option>
+                        <option value="uk">UK</option>
+                        <option value="ru">RU</option>
+                    </select>
                 </div>
-                <div class="hero-meta">
-                    <span><i class="dot"></i> <span data-i18n="heroMetaNda">NDA by default</span></span>
-                    <span><i class="dot"></i> <span data-i18n="heroMetaReport">Report in 5–10 business days</span></span>
-                    <span><i class="dot"></i> <span data-i18n="heroMetaRemote">Remote work, worldwide</span></span>
-                </div>
+
+                <a href="https://t.me/CSO_System" class="btn btn-primary" data-i18n="navCta">Request audit</a>
+                <button class="hamburger" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
+        </nav>
+    </header>
 
-            <div class="scan-card glass" id="scanWidget">
-                <div class="scan-head">
-                    <span class="scan-title">OSINT // LIVE-SCAN</span>
-                    <span class="scan-status"><span class="pulse-dot"></span> ACTIVE</span>
-                </div>
-                <div class="scan-target" id="scanTarget"><span class="prompt">&gt;</span>target: —</div>
-                <div class="scan-lines" id="scanLines"></div>
-                <div class="scan-results" id="scanResults"></div>
-            </div>
-        </div>
-    </section>
+    <div class="mobile-nav" id="mobileNav">
+        <a href="#services" data-i18n="navServices">Services</a>
+        <a href="#osint" data-i18n="navOsint">OSINT</a>
+        <a href="#process" data-i18n="navProcess">Process</a>
+        <a href="#pricing" data-i18n="navPricing">Pricing</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
+        <a href="#contact" class="btn btn-primary" data-i18n="navCta">Request audit</a>
+    </div>
 
-    <!-- ============================== STANDARDS ============================== -->
-    <section class="standards">
-        <div class="container reveal">
-            <p class="label" data-i18n="standardsLabel">Methodology is built on recognized industrial approaches</p>
-            <div class="standards-row">
-                <span class="pill glass">ISO/IEC 27001</span>
-                <span class="pill glass">MITRE ATT&amp;CK</span>
-                <span class="pill glass">OWASP</span>
-                <span class="pill glass">NIST CSF</span>
-                <span class="pill glass">OSINT Framework</span>
-            </div>
-        </div>
-    </section>
+    <main id="main">
 
-    <!-- ============================== SERVICES ============================== -->
-    <section class="section" id="services">
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="eyebrow" data-i18n="servicesEyebrow">What we do</span>
-                <h2 data-i18n="servicesTitle">Intelligence, defense, and design — in one loop</h2>
-                <p data-i18n="servicesLead">From a one-time audit to continuous perimeter monitoring: we tailor the format to the task, not the other way around.</p>
-            </div>
-            <div class="services-grid reveal-stagger">
-
-                <div class="service-card glass">
-                    <span class="service-tag">[OSINT]</span>
-                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg></div>
-                    <h3 data-i18n="s1Title">OSINT Investigations</h3>
-                    <p data-i18n="s1Desc">We collect and verify data from open sources — social networks, forums, registries, leaks — to provide a complete picture of a person, company, or asset before decision making.</p>
-                </div>
-
-                <div class="service-card glass">
-                    <span class="service-tag">[AUDIT]</span>
-                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-fingerprint"></use></svg></div>
-                    <h3 data-i18n="s2Title">Digital Footprint Audit</h3>
-                    <p data-i18n="s2Desc">We reveal what is already known about you and your company online: from old accounts to accidentally exposed infrastructure — and how to close it.</p>
-                </div>
-
-                <div class="service-card glass">
-                    <span class="service-tag">[MONITOR]</span>
-                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-radar"></use></svg></div>
-                    <h3 data-i18n="s3Title">Leak & Darknet Monitoring</h3>
-                    <p data-i18n="s3Desc">We track mentions of your credentials, domains, and employees in data leaks and shadow forums — notifying you before attackers can exploit them.</p>
-                </div>
-
-                <div class="service-card glass">
-                    <span class="service-tag">[INTEL]</span>
-                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-network"></use></svg></div>
-                    <h3 data-i18n="s4Title">Threat Intelligence</h3>
-                    <p data-i18n="s4Desc">We transform scattered indicators of compromise into a clear threat map, mapped specifically to your infrastructure and industry.</p>
-                </div>
-
-                <div class="service-card glass">
-                    <span class="service-tag">[TRAIN]</span>
-                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-chat-alert"></use></svg></div>
-                    <h3 data-i18n="s5Title">Social Engineering & Awareness</h3>
-                    <p data-i18n="s5Desc">We test team resilience to phishing and manipulation through controlled scenarios — focusing on education, not intimidation.</p>
-                </div>
-
-                <div class="service-card glass">
-                    <span class="service-tag">[DESIGN]</span>
-                    <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-layers"></use></svg></div>
-                    <h3 data-i18n="s6Title">Security by Design</h3>
-                    <p data-i18n="s6Desc">We embed security requirements into interfaces and product architecture at the very start — making protection feel like a natural part of the user experience.</p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================== OSINT DEEP ============================== -->
-    <section class="section" id="osint">
-        <div class="container osint-grid">
-            <div class="reveal">
-                <span class="eyebrow" data-i18n="osintEyebrow">Our primary discipline</span>
-                <h2 style="font-size:clamp(1.8rem,3.6vw,2.6rem);margin-bottom:.9rem;" data-i18n="osintTitle">OSINT — Open Source Intelligence</h2>
-                <p class="text-secondary" data-i18n="osintDesc">We collect data using legal methods: public profiles, registries, leaks, metadata, infrastructure. The result is a structured report with an evidentiary base, not just a bunch of screenshots.</p>
-                <ul class="osint-list">
-                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL1"><strong>Due diligence</strong> — verification of counterparties, partners, and candidates before a deal or hire.</span></li>
-                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL2"><strong>Digital deanonymization</strong> — connecting aliases, accounts, and geotags into a single cohesive profile.</span></li>
-                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL3"><strong>Brand monitoring</strong> — fake profiles, phishing domains, leak of internal corporate materials.</span></li>
-                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL4"><strong>Competitive intelligence</strong> — public signals about strategy, hiring, and market infrastructure.</span></li>
-                    <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL5"><strong>Infrastructure analysis</strong> — subdomains, certificates, open ports, and services on the perimeter.</span></li>
-                </ul>
-            </div>
-
-            <div class="network-card glass reveal">
-                <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" role="img" id="networkSvg">
-                    <line x1="180" y1="160" x2="60" y2="60" stroke="rgba(79,227,255,.35)" stroke-width="1.4" />
-                    <line x1="180" y1="160" x2="300" y2="55" stroke="rgba(155,107,255,.35)" stroke-width="1.4" />
-                    <line x1="180" y1="160" x2="50" y2="220" stroke="rgba(79,227,255,.35)" stroke-width="1.4" />
-                    <line x1="180" y1="160" x2="305" y2="225" stroke="rgba(255,95,168,.3)" stroke-width="1.4" />
-                    <line x1="180" y1="160" x2="180" y2="270" stroke="rgba(155,107,255,.35)" stroke-width="1.4" />
-                    <line x1="180" y1="160" x2="95" y2="270" stroke="rgba(79,227,255,.25)" stroke-width="1.4" />
-
-                    <circle cx="180" cy="160" r="16" fill="#0A0D17" stroke="#4FE3FF" stroke-width="1.6" />
-                    <circle cx="180" cy="160" r="4" fill="#4FE3FF" />
-                    <text x="180" y="190" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#9AA3B5" id="svgTarget">TARGET</text>
-
-                    <circle cx="60" cy="60" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
-                    <text x="60" y="40" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgSocial">socials</text>
-
-                    <circle cx="300" cy="55" r="10" fill="#0A0D17" stroke="rgba(155,107,255,.7)" stroke-width="1.3" />
-                    <text x="300" y="35" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgDomains">domains</text>
-
-                    <circle cx="50" cy="220" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
-                    <text x="50" y="245" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgRegistries">registries</text>
-
-                    <circle cx="305" cy="225" r="10" fill="#0A0D17" stroke="rgba(255,95,168,.7)" stroke-width="1.3" />
-                    <text x="305" y="250" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgLeaks">leaks</text>
-
-                    <circle cx="180" cy="270" r="10" fill="#0A0D17" stroke="rgba(155,107,255,.7)" stroke-width="1.3" />
-                    <text x="180" y="295" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgForums">forums</text>
-
-                    <circle cx="95" cy="270" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
-                    <text x="95" y="295" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgInfra">infra</text>
-                </svg>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================== PROCESS ============================== -->
-    <section class="section" id="process">
-        <div class="container">
-            <div class="section-head center reveal">
-                <span class="eyebrow" data-i18n="processEyebrow">How we work</span>
-                <h2 data-i18n="processTitle">Five steps from request to resolved risk</h2>
-                <p data-i18n="processLead">Sequence matters: each subsequent step is built upon the results of the previous one.</p>
-            </div>
-            <div class="timeline reveal">
-                <div class="timeline-item">
-                    <div class="timeline-num">01</div>
-                    <div class="timeline-card glass"><h3 data-i18n="p1Title">Request & NDA</h3><p data-i18n="p1Desc">We discuss the task, perimeter, and deadlines. We sign a non-disclosure agreement before any work begins.</p></div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-num">02</div>
-                    <div class="timeline-card glass"><h3 data-i18n="p2Title">Intelligence</h3><p data-i18n="p2Desc">We collect data from open sources strictly within the boundaries of the approved perimeter.</p></div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-num">03</div>
-                    <div class="timeline-card glass"><h3 data-i18n="p3Title">Analysis</h3><p data-i18n="p3Desc">We correlate findings, separate noise from signals, and prioritize risks based on actual potential damage.</p></div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-num">04</div>
-                    <div class="timeline-card glass"><h3 data-i18n="p4Title">Report</h3><p data-i18n="p4Desc">We deliver a structured report with an evidentiary base and explicit, actionable recommendations.</p></div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-num">05</div>
-                    <div class="timeline-card glass"><h3 data-i18n="p5Title">Support</h3><p data-i18n="p5Desc">We help mitigate discovered risks and, if required, keep your perimeter under continuous monitoring.</p></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================== METRICS ============================== -->
-    <section class="section" style="padding-top:0;">
-        <div class="container">
-            <div class="metrics-card glass reveal">
-                <div class="metric">
-                    <div class="metric-number"><span class="stat-number" data-target="420">0</span><span class="suf">+</span></div>
-                    <p class="metric-label" data-i18n="m1Label">completed investigations</p>
-                </div>
-                <div class="metric">
-                    <div class="metric-number"><span class="stat-number" data-target="1200">0</span><span class="suf">+</span></div>
-                    <p class="metric-label" data-i18n="m2Label">monitored sources daily</p>
-                </div>
-                <div class="metric">
-                    <div class="metric-number"><span class="pre">&lt;</span><span class="stat-number" data-target="24">0</span><span class="suf" id="m3Suf">h</span></div>
-                    <p class="metric-label" data-i18n="m3Label">average initial response time</p>
-                </div>
-                <div class="metric">
-                    <div class="metric-number"><span class="stat-number" data-target="100">0</span><span class="suf">%</span></div>
-                    <p class="metric-label" data-i18n="m4Label">of projects executed under NDA</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================== TESTIMONIALS ============================== -->
-    <section class="section">
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="eyebrow" data-i18n="testiEyebrow">Testimonials</span>
-                <h2 data-i18n="testiTitle">What those who already verified their perimeter say</h2>
-            </div>
-            <div class="testimonial-grid reveal-stagger">
-                <div class="testimonial-card glass">
-                    <p class="quote" data-i18n="t1Quote">"Following the audit, we closed a data leak we didn't even know existed — an old subdomain containing a test database."</p>
-                    <div class="testimonial-author"><div class="avatar" id="t1Avatar">IR</div><div><div class="name" data-i18n="t1Name">Igor R.</div><div class="role">CISO, e-commerce</div></div></div>
-                </div>
-                <div class="testimonial-card glass">
-                    <p class="quote" data-i18n="t2Quote">"The OSINT report was so comprehensively detailed that we completely restructured our entire employee hiring workflow."</p>
-                    <div class="testimonial-author"><div class="avatar" id="t2Avatar">MS</div><div><div class="name" data-i18n="t2Name">Marina S.</div><div class="role">HRD, fintech startup</div></div></div>
-                </div>
-                <div class="testimonial-card glass">
-                    <p class="quote" data-i18n="t3Quote">"Loved that the report doesn't just scare you with technical jargon, but instead immediately provides a clear plan of action."</p>
-                    <div class="testimonial-author"><div class="avatar" id="t3Avatar">DK</div><div><div class="name" data-i18n="t3Name">Dmitry K.</div><div class="role" data-i18n="t3Role">Founder, legal practice</div></div></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================== PRICING ============================== -->
-    <section class="section" id="pricing">
-        <div class="container">
-            <div class="section-head center reveal">
-                <span class="eyebrow" data-i18n="pricingEyebrow">Pricing</span>
-                <h2 data-i18n="pricingTitle">A format for any task — from a one-time audit to continuous defense</h2>
-                <p data-i18n="pricingLead">We calculate the exact cost individually after a brief discovery call — no hidden clauses in the contract.</p>
-            </div>
-            <div class="pricing-grid reveal-stagger">
-
-                <div class="price-card glass">
-                    <h3 data-i18n="card1Title">Start</h3>
-                    <p class="price-note" data-i18n="priceIndividual">Individual calculation</p>
-                    <ul class="price-features">
-                        <li data-i18n="c1f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Single target — company, individual, or domain</li>
-                        <li data-i18n="c1f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Report complete with sources and evidence</li>
-                        <li data-i18n="c1f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Basic risk evaluation</li>
-                        <li data-i18n="c1f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Timeline: 5–7 business days</li>
-                        <li data-i18n="c1f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>NDA by default</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-ghost btn-block" data-i18n="btnDiscuss">Discuss project</a>
-                </div>
-
-                <div class="price-card glass popular">
-                    <span class="popular-tag" data-i18n="popularTag">popular choice</span>
-                    <h3 data-i18n="card2Title">Professional</h3>
-                    <p class="price-note" data-i18n="priceIndividual">Individual calculation</p>
-                    <ul class="price-features">
-                        <li data-i18n="c2f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Up to 5 targets under continuous observation</li>
-                        <li data-i18n="c2f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>24/7 leak and shadow forum monitoring</li>
-                        <li data-i18n="c2f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Instant alerts whenever new data surfaces</li>
-                        <li data-i18n="c2f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Monthly summary analytics report</li>
-                        <li data-i18n="c2f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Priority support loop</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-primary btn-block" data-i18n="btnDiscuss">Discuss project</a>
-                </div>
-
-                <div class="price-card glass">
-                    <h3 data-i18n="card3Title">Corporate</h3>
-                    <p class="price-note" data-i18n="priceOnRequest">Upon request</p>
-                    <ul class="price-features">
-                        <li data-i18n="c3f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Custom tracking perimeter and tailored SLA</li>
-                        <li data-i18n="c3f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Threat Intelligence mapped to your industry</li>
-                        <li data-i18n="c3f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Secure product design experience audit</li>
-                        <li data-i18n="c3f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Dedicated security analyst</li>
-                        <li data-i18n="c3f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Coordinated red team simulation scenarios</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-ghost btn-block" data-i18n="btnDiscuss">Discuss project</a>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================== CONTACT ============================== -->
-    <section class="section" id="contact">
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="eyebrow" data-i18n="contactEyebrow">Contact</span>
-                <h2 data-i18n="contactTitle">Ready to find out what is visible about you online?</h2>
-                <p data-i18n="contactLead">Describe your task — we will respond within 24 hours and propose an engagement format.</p>
-            </div>
-
-            <div class="contact-grid reveal">
-                <form class="contact-form glass" id="contactForm">
-                    <div id="formFields">
-                        <div class="form-row">
-                            <div class="field">
-                                <label for="name" id="lName">Name</label>
-                                <input id="name" name="name" type="text" placeholder="How to address you" required>
-                            </div>
-                            <div class="field">
-                                <label for="company" id="lCompany">Company</label>
-                                <input id="company" name="company" type="text" placeholder="Optional">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="field">
-                                <label for="contact-channel" id="lChannel">Email or Telegram</label>
-                                <input id="contact-channel" name="contact" type="text" placeholder="you@company.com" required>
-                            </div>
-                            <div class="field">
-                                <label for="task-type" id="lTask">Task Type</label>
-                                <select id="task-type" name="task">
-                                    <!-- Handled dynamically by JS -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label for="message" id="lMessage">Message</label>
-                            <textarea id="message" name="message" placeholder="Briefly outline your task and deadlines" required></textarea>
-                        </div>
-                        <label class="consent" id="lConsent">
-                            <input type="checkbox" required>
-                            <span>I consent to data processing for feedback purposes. All materials are transmitted via secure channels.</span>
-                        </label>
-                        <button type="submit" class="btn btn-primary btn-block" id="btnSubmit">Submit request<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></button>
+        <!-- ============================== HERO ============================== -->
+        <section class="hero" id="home">
+            <div class="container hero-grid">
+                <div class="hero-text">
+                    <span class="eyebrow" data-i18n="heroEyebrow">API.DEVS · Cybersecurity & OSINT</span>
+                    <h1 id="heroTitle">Making <span class="grad-text">visible</span> what is hidden online</h1>
+                    <p class="lead" data-i18n="heroLead">Cybersecurity and OSINT-intelligence studio. We gather digital footprints, assess attack surfaces, and design defense systems that are convenient for everyday use.</p>
+                    <div class="hero-cta">
+                        <a href="#contact" class="btn btn-primary" id="heroCtaPrimary">Request OSINT-audit<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></a>
+                        <a href="#process" class="btn btn-ghost" data-i18n="heroCtaGhost">How we work</a>
                     </div>
-                    <div class="form-success" id="formSuccess">
-                        <div class="icon-circle"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></div>
-                        <h3 style="font-size:1.2rem;" data-i18n="successTitle">Request received</h3>
-                        <p class="text-secondary" data-i18n="successDesc">We will reply within 24 hours using the provided contact details.</p>
-                        <button class="btn btn-ghost" id="formReset" type="button" data-i18n="successReset">Submit another request</button>
+                    <div class="hero-meta">
+                        <span><i class="dot"></i> <span data-i18n="heroMetaNda">NDA by default</span></span>
+                        <span><i class="dot"></i> <span data-i18n="heroMetaReport">Report in 5–10 business days</span></span>
+                        <span><i class="dot"></i> <span data-i18n="heroMetaRemote">Remote work, worldwide</span></span>
                     </div>
-                </form>
+                </div>
 
-                <div class="contact-info glass">
-                    <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-mail"></use></svg></div><div><div class="label">Email</div><div class="value">NaN</div></div></div>
-                    <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></div><div><div class="label" data-i18n="infoTimeLabel">Response time</div><div class="value" data-i18n="infoTimeVal">under 24 hours, 7 days a week</div></div></div>
-                    <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg></div><div><div class="label" data-i18n="infoPrivacyLabel">Confidentiality</div><div class="value" data-i18n="infoPrivacyVal">NDA by default for all engagements</div></div></div>
+                <div class="scan-card glass" id="scanWidget">
+                    <div class="scan-head">
+                        <span class="scan-title">OSINT // LIVE-SCAN</span>
+                        <span class="scan-status"><span class="pulse-dot"></span> ACTIVE</span>
+                    </div>
+                    <div class="scan-target" id="scanTarget"><span class="prompt">&gt;</span>target: —</div>
+                    <div class="scan-lines" id="scanLines"></div>
+                    <div class="scan-results" id="scanResults"></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-</main>
-        
+        <!-- ============================== STANDARDS ============================== -->
+        <section class="standards">
+            <div class="container reveal">
+                <p class="label" data-i18n="standardsLabel">Methodology is built on recognized industrial approaches</p>
+                <div class="standards-row">
+                    <span class="pill glass">ISO/IEC 27001</span>
+                    <span class="pill glass">MITRE ATT&amp;CK</span>
+                    <span class="pill glass">OWASP</span>
+                    <span class="pill glass">NIST CSF</span>
+                    <span class="pill glass">OSINT Framework</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== SERVICES ============================== -->
+        <section class="section" id="services">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="eyebrow" data-i18n="servicesEyebrow">What we do</span>
+                    <h2 data-i18n="servicesTitle">Intelligence, defense, and design — in one loop</h2>
+                    <p data-i18n="servicesLead">From a one-time audit to continuous perimeter monitoring: we tailor the format to the task, not the other way around.</p>
+                </div>
+                <div class="services-grid reveal-stagger">
+
+                    <div class="service-card glass">
+                        <span class="service-tag">[OSINT]</span>
+                        <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg></div>
+                        <h3 data-i18n="s1Title">OSINT Investigations</h3>
+                        <p data-i18n="s1Desc">We collect and verify data from open sources — social networks, forums, registries, leaks — to provide a complete picture of a person, company, or asset before decision making.</p>
+                    </div>
+
+                    <div class="service-card glass">
+                        <span class="service-tag">[AUDIT]</span>
+                        <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-fingerprint"></use></svg></div>
+                        <h3 data-i18n="s2Title">Digital Footprint Audit</h3>
+                        <p data-i18n="s2Desc">We reveal what is already known about you and your company online: from old accounts to accidentally exposed infrastructure — and how to close it.</p>
+                    </div>
+
+                    <div class="service-card glass">
+                        <span class="service-tag">[MONITOR]</span>
+                        <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-radar"></use></svg></div>
+                        <h3 data-i18n="s3Title">Leak & Darknet Monitoring</h3>
+                        <p data-i18n="s3Desc">We track mentions of your credentials, domains, and employees in data leaks and shadow forums — notifying you before attackers can exploit them.</p>
+                    </div>
+
+                    <div class="service-card glass">
+                        <span class="service-tag">[INTEL]</span>
+                        <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-network"></use></svg></div>
+                        <h3 data-i18n="s4Title">Threat Intelligence</h3>
+                        <p data-i18n="s4Desc">We transform scattered indicators of compromise into a clear threat map, mapped specifically to your infrastructure and industry.</p>
+                    </div>
+
+                    <div class="service-card glass">
+                        <span class="service-tag">[TRAIN]</span>
+                        <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-chat-alert"></use></svg></div>
+                        <h3 data-i18n="s5Title">Social Engineering & Awareness</h3>
+                        <p data-i18n="s5Desc">We test team resilience to phishing and manipulation through controlled scenarios — focusing on education, not intimidation.</p>
+                    </div>
+
+                    <div class="service-card glass">
+                        <span class="service-tag">[DESIGN]</span>
+                        <div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-layers"></use></svg></div>
+                        <h3 data-i18n="s6Title">Security by Design</h3>
+                        <p data-i18n="s6Desc">We embed security requirements into interfaces and product architecture at the very start — making protection feel like a natural part of the user experience.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== OSINT DEEP ============================== -->
+        <section class="section" id="osint">
+            <div class="container osint-grid">
+                <div class="reveal">
+                    <span class="eyebrow" data-i18n="osintEyebrow">Our primary discipline</span>
+                    <h2 style="font-size:clamp(1.8rem,3.6vw,2.6rem);margin-bottom:.9rem;" data-i18n="osintTitle">OSINT — Open Source Intelligence</h2>
+                    <p class="text-secondary" data-i18n="osintDesc">We collect data using legal methods: public profiles, registries, leaks, metadata, infrastructure. The result is a structured report with an evidentiary base, not just a bunch of screenshots.</p>
+                    <ul class="osint-list">
+                        <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL1"><strong>Due diligence</strong> — verification of counterparties, partners, and candidates before a deal or hire.</span></li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL2"><strong>Digital deanonymization</strong> — connecting aliases, accounts, and geotags into a single cohesive profile.</span></li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL3"><strong>Brand monitoring</strong> — fake profiles, phishing domains, leak of internal corporate materials.</span></li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL4"><strong>Competitive intelligence</strong> — public signals about strategy, hiring, and market infrastructure.</span></li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg><span id="osintL5"><strong>Infrastructure analysis</strong> — subdomains, certificates, open ports, and services on the perimeter.</span></li>
+                    </ul>
+                </div>
+
+                <div class="network-card glass reveal">
+                    <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" role="img" id="networkSvg">
+                        <line x1="180" y1="160" x2="60" y2="60" stroke="rgba(79,227,255,.35)" stroke-width="1.4" />
+                        <line x1="180" y1="160" x2="300" y2="55" stroke="rgba(155,107,255,.35)" stroke-width="1.4" />
+                        <line x1="180" y1="160" x2="50" y2="220" stroke="rgba(79,227,255,.35)" stroke-width="1.4" />
+                        <line x1="180" y1="160" x2="305" y2="225" stroke="rgba(255,95,168,.3)" stroke-width="1.4" />
+                        <line x1="180" y1="160" x2="180" y2="270" stroke="rgba(155,107,255,.35)" stroke-width="1.4" />
+                        <line x1="180" y1="160" x2="95" y2="270" stroke="rgba(79,227,255,.25)" stroke-width="1.4" />
+
+                        <circle cx="180" cy="160" r="16" fill="#0A0D17" stroke="#4FE3FF" stroke-width="1.6" />
+                        <circle cx="180" cy="160" r="4" fill="#4FE3FF" />
+                        <text x="180" y="190" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#9AA3B5" id="svgTarget">TARGET</text>
+
+                        <circle cx="60" cy="60" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
+                        <text x="60" y="40" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgSocial">socials</text>
+
+                        <circle cx="300" cy="55" r="10" fill="#0A0D17" stroke="rgba(155,107,255,.7)" stroke-width="1.3" />
+                        <text x="300" y="35" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgDomains">domains</text>
+
+                        <circle cx="50" cy="220" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
+                        <text x="50" y="245" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgRegistries">registries</text>
+
+                        <circle cx="305" cy="225" r="10" fill="#0A0D17" stroke="rgba(255,95,168,.7)" stroke-width="1.3" />
+                        <text x="305" y="250" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgLeaks">leaks</text>
+
+                        <circle cx="180" cy="270" r="10" fill="#0A0D17" stroke="rgba(155,107,255,.7)" stroke-width="1.3" />
+                        <text x="180" y="295" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgForums">forums</text>
+
+                        <circle cx="95" cy="270" r="10" fill="#0A0D17" stroke="rgba(79,227,255,.7)" stroke-width="1.3" />
+                        <text x="95" y="295" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#9AA3B5" id="svgInfra">infra</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== PROCESS ============================== -->
+        <section class="section" id="process">
+            <div class="container">
+                <div class="section-head center reveal">
+                    <span class="eyebrow" data-i18n="processEyebrow">How we work</span>
+                    <h2 data-i18n="processTitle">Five steps from request to resolved risk</h2>
+                    <p data-i18n="processLead">Sequence matters: each subsequent step is built upon the results of the previous one.</p>
+                </div>
+                <div class="timeline reveal">
+                    <div class="timeline-item">
+                        <div class="timeline-num">01</div>
+                        <div class="timeline-card glass"><h3 data-i18n="p1Title">Request & NDA</h3><p data-i18n="p1Desc">We discuss the task, perimeter, and deadlines. We sign a non-disclosure agreement before any work begins.</p></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-num">02</div>
+                        <div class="timeline-card glass"><h3 data-i18n="p2Title">Intelligence</h3><p data-i18n="p2Desc">We collect data from open sources strictly within the boundaries of the approved perimeter.</p></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-num">03</div>
+                        <div class="timeline-card glass"><h3 data-i18n="p3Title">Analysis</h3><p data-i18n="p3Desc">We correlate findings, separate noise from signals, and prioritize risks based on actual potential damage.</p></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-num">04</div>
+                        <div class="timeline-card glass"><h3 data-i18n="p4Title">Report</h3><p data-i18n="p4Desc">We deliver a structured report with an evidentiary base and explicit, actionable recommendations.</p></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-num">05</div>
+                        <div class="timeline-card glass"><h3 data-i18n="p5Title">Support</h3><p data-i18n="p5Desc">We help mitigate discovered risks and, if required, keep your perimeter under continuous monitoring.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== METRICS ============================== -->
+        <section class="section" style="padding-top:0;">
+            <div class="container">
+                <div class="metrics-card glass reveal">
+                    <div class="metric">
+                        <div class="metric-number"><span class="stat-number" data-target="420">0</span><span class="suf">+</span></div>
+                        <p class="metric-label" data-i18n="m1Label">completed investigations</p>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-number"><span class="stat-number" data-target="1200">0</span><span class="suf">+</span></div>
+                        <p class="metric-label" data-i18n="m2Label">monitored sources daily</p>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-number"><span class="pre">&lt;</span><span class="stat-number" data-target="24">0</span><span class="suf" id="m3Suf">h</span></div>
+                        <p class="metric-label" data-i18n="m3Label">average initial response time</p>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-number"><span class="stat-number" data-target="100">0</span><span class="suf">%</span></div>
+                        <p class="metric-label" data-i18n="m4Label">of projects executed under NDA</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== TESTIMONIALS ============================== -->
+        <section class="section">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="eyebrow" data-i18n="testiEyebrow">Testimonials</span>
+                    <h2 data-i18n="testiTitle">What those who already verified their perimeter say</h2>
+                </div>
+                <div class="testimonial-grid reveal-stagger">
+                    <div class="testimonial-card glass">
+                        <p class="quote" data-i18n="t1Quote">"Following the audit, we closed a data leak we didn't even know existed — an old subdomain containing a test database."</p>
+                        <div class="testimonial-author"><div class="avatar" id="t1Avatar">IR</div><div><div class="name" data-i18n="t1Name">Igor R.</div><div class="role">CISO, e-commerce</div></div></div>
+                    </div>
+                    <div class="testimonial-card glass">
+                        <p class="quote" data-i18n="t2Quote">"The OSINT report was so comprehensively detailed that we completely restructured our entire employee hiring workflow."</p>
+                        <div class="testimonial-author"><div class="avatar" id="t2Avatar">MS</div><div><div class="name" data-i18n="t2Name">Marina S.</div><div class="role">HRD, fintech startup</div></div></div>
+                    </div>
+                    <div class="testimonial-card glass">
+                        <p class="quote" data-i18n="t3Quote">"Loved that the report doesn't just scare you with technical jargon, but instead immediately provides a clear plan of action."</p>
+                        <div class="testimonial-author"><div class="avatar" id="t3Avatar">DK</div><div><div class="name" data-i18n="t3Name">Dmitry K.</div><div class="role" data-i18n="t3Role">Founder, legal practice</div></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== SERVER ============================== -->
+        <section id="data-protection" class="section reveal">
+            <div class="container">
+                <div class="osint-grid">
+                    <div class="reveal-stagger">
+                        <div class="eyebrow" id="dp-eyebrow">Secure Infrastructure</div>
+                        <h2 id="dp-title">Хранение и защита разведданных</h2>
+                        <p class="text-secondary" style="margin-bottom: 1.5rem;" id="dp-desc">
+                            Все результаты OSINT-исследований, аудитов цифрового следа и мониторинга утечек хранятся в изолированном децентрализованном контуре. Мы применяем сквозное шифрование военного уровня для предотвращения любого несанкционированного доступа.
+                        </p>
+                        <ul class="osint-list" style="margin-bottom: 2rem;">
+                            <li>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
+                                <span><strong id="dp-strong-1">AES-256-GCM шифрование:</strong> <span id="dp-li-1">Все данные шифруются на лету перед записью на физические носители.</span></span>
+                            </li>
+                            <li>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
+                                <span><strong id="dp-strong-2">Zero-Knowledge архитектура:</strong> <span id="dp-li-2">У нас нет прямого доступа к вашим паролям и приватным ключам расшифровки.</span></span>
+                            </li>
+                            <li>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
+                                <span><strong id="dp-strong-3">Автоматическое уничтожение:</strong> <span id="dp-li-3">Возможность настройки self-destruct таймеров для отчетов.</span></span>
+                            </li>
+                        </ul>
+                        <a href="#contact" class="btn btn-primary btn-magnetic" id="dp-btn">Заказать аудит инфраструктуры</a>
+                    </div>
+
+                    <div class="network-card glass tilt" style="min-height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
+                        <canvas id="servers-3d-canvas" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: auto;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== PRICING ============================== -->
+        <section class="section" id="pricing">
+            <div class="container">
+                <div class="section-head center reveal">
+                    <span class="eyebrow" data-i18n="pricingEyebrow">Pricing</span>
+                    <h2 data-i18n="pricingTitle">A format for any task — from a one-time audit to continuous defense</h2>
+                    <p data-i18n="pricingLead">We calculate the exact cost individually after a brief discovery call — no hidden clauses in the contract.</p>
+                </div>
+                <div class="pricing-grid reveal-stagger">
+
+                    <div class="price-card glass">
+                        <h3 data-i18n="card1Title">Start</h3>
+                        <p class="price-note" data-i18n="priceIndividual">Individual calculation</p>
+                        <ul class="price-features">
+                            <li data-i18n="c1f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Single target — company, individual, or domain</li>
+                            <li data-i18n="c1f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Report complete with sources and evidence</li>
+                            <li data-i18n="c1f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Basic risk evaluation</li>
+                            <li data-i18n="c1f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Timeline: 5–7 business days</li>
+                            <li data-i18n="c1f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>NDA by default</li>
+                        </ul>
+                        <a href="#contact" class="btn btn-ghost btn-block" data-i18n="btnDiscuss">Discuss project</a>
+                    </div>
+
+                    <div class="price-card glass popular">
+                        <span class="popular-tag" data-i18n="popularTag">popular choice</span>
+                        <h3 data-i18n="card2Title">Professional</h3>
+                        <p class="price-note" data-i18n="priceIndividual">Individual calculation</p>
+                        <ul class="price-features">
+                            <li data-i18n="c2f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Up to 5 targets under continuous observation</li>
+                            <li data-i18n="c2f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>24/7 leak and shadow forum monitoring</li>
+                            <li data-i18n="c2f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Instant alerts whenever new data surfaces</li>
+                            <li data-i18n="c2f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Monthly summary analytics report</li>
+                            <li data-i18n="c2f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Priority support loop</li>
+                        </ul>
+                        <a href="#contact" class="btn btn-primary btn-block" data-i18n="btnDiscuss">Discuss project</a>
+                    </div>
+
+                    <div class="price-card glass">
+                        <h3 data-i18n="card3Title">Corporate</h3>
+                        <p class="price-note" data-i18n="priceOnRequest">Upon request</p>
+                        <ul class="price-features">
+                            <li data-i18n="c3f1"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Custom tracking perimeter and tailored SLA</li>
+                            <li data-i18n="c3f2"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Threat Intelligence mapped to your industry</li>
+                            <li data-i18n="c3f3"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Secure product design experience audit</li>
+                            <li data-i18n="c3f4"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Dedicated security analyst</li>
+                            <li data-i18n="c3f5"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg>Coordinated red team simulation scenarios</li>
+                        </ul>
+                        <a href="#contact" class="btn btn-ghost btn-block" data-i18n="btnDiscuss">Discuss project</a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== CONTACT ============================== -->
+        <section class="section" id="contact">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="eyebrow" data-i18n="contactEyebrow">Contact</span>
+                    <h2 data-i18n="contactTitle">Ready to find out what is visible about you online?</h2>
+                    <p data-i18n="contactLead">Describe your task — we will respond within 24 hours and propose an engagement format.</p>
+                </div>
+
+                <div class="contact-grid reveal">
+                    <form class="contact-form glass" id="contactForm">
+                        <div id="formFields">
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="name" id="lName">Name</label>
+                                    <input id="name" name="name" type="text" placeholder="How to address you" required>
+                                </div>
+                                <div class="field">
+                                    <label for="company" id="lCompany">Company</label>
+                                    <input id="company" name="company" type="text" placeholder="Optional">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="field">
+                                    <label for="contact-channel" id="lChannel">Email or Telegram</label>
+                                    <input id="contact-channel" name="contact" type="text" placeholder="you@company.com" required>
+                                </div>
+                                <div class="field">
+                                    <label for="task-type" id="lTask">Task Type</label>
+                                    <select id="task-type" name="task">
+                                        <!-- Handled dynamically by JS -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="message" id="lMessage">Message</label>
+                                <textarea id="message" name="message" placeholder="Briefly outline your task and deadlines" required></textarea>
+                            </div>
+                            <label class="consent" id="lConsent">
+                                <input type="checkbox" required>
+                                <span>I consent to data processing for feedback purposes. All materials are transmitted via secure channels.</span>
+                            </label>
+                            <button type="submit" class="btn btn-primary btn-block" id="btnSubmit">Submit request<svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></button>
+                        </div>
+                        <div class="form-success" id="formSuccess">
+                            <div class="icon-circle"><svg class="icon" aria-hidden="true"><use href="#icon-check"></use></svg></div>
+                            <h3 style="font-size:1.2rem;" data-i18n="successTitle">Request received</h3>
+                            <p class="text-secondary" data-i18n="successDesc">We will reply within 24 hours using the provided contact details.</p>
+                            <button class="btn btn-ghost" id="formReset" type="button" data-i18n="successReset">Submit another request</button>
+                        </div>
+                    </form>
+
+                    <div class="contact-info glass">
+                        <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-mail"></use></svg></div><div><div class="label">Email</div><div class="value">NaN</div></div></div>
+                        <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-clock"></use></svg></div><div><div class="label" data-i18n="infoTimeLabel">Response time</div><div class="value" data-i18n="infoTimeVal">under 24 hours, 7 days a week</div></div></div>
+                        <div class="info-row"><div class="icon-wrap"><svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg></div><div><div class="label" data-i18n="infoPrivacyLabel">Confidentiality</div><div class="value" data-i18n="infoPrivacyVal">NDA by default for all engagements</div></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
     <!-- ============================== FOOTER ============================== -->
     <footer>
         <div class="container">
@@ -900,6 +1191,16 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
             /* ---------- Localization Dictionary ---------- */
             var i18n = {
                 en: {
+                    "dp-eyebrow": "Secure Infrastructure",
+                    "dp-title": "Storage & Protection of Intelligence Data",
+                    "dp-desc": "All results of OSINT investigations, digital footprint audits, and leak monitoring are stored in an isolated, decentralized perimeter. We apply military-grade end-to-end encryption to prevent any unauthorized access.",
+                    "dp-strong-1": "AES-256-GCM encryption:",
+                    "dp-li-1": "All data is encrypted on the fly before being written to physical media.",
+                    "dp-strong-2": "Zero-Knowledge architecture:",
+                    "dp-li-2": "We have no direct access to your passwords or private decryption keys.",
+                    "dp-strong-3": "Automatic self-destruction:",
+                    "dp-li-3": "Ability to configure self-destruct timers for generated reports.",
+                    "dp-btn": "Request infrastructure audit",
                     htmlLang: "en",
                     pageTitle: "API.DEVS — cybersecurity, OSINT-intelligence and secure design",
                     skipLink: "Skip to content",
@@ -1054,6 +1355,16 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
                     ]
                 },
                 uk: {
+                    "dp-eyebrow": "Secure Infrastructure",
+                    "dp-title": "Зберігання та захист розвідданих",
+                    "dp-desc": "Усі результати OSINT-досліджень, аудитів цифрового сліду та моніторингу витоків зберігаються в ізольованому децентралізованому контурі. Ми застосовуємо наскрізне шифрування військового рівня для запобігання будь-якому несанкціонованому доступу.",
+                    "dp-strong-1": "AES-256-GCM шифрування:",
+                    "dp-li-1": "Усі дані шифруються на льоту перед записом на фізичні носії.",
+                    "dp-strong-2": "Zero-Knowledge архітектура:",
+                    "dp-li-2": "Ми не маємо прямого доступу до ваших паролів та приватних ключів розшифрування.",
+                    "dp-strong-3": "Автоматичне знищення:",
+                    "dp-li-3": "Можливість налаштування self-destruct таймерів для звітів.",
+                    "dp-btn": "Замовити аудит інфраструктури",
                     htmlLang: "uk",
                     pageTitle: "API.DEVS — кібербезпека, OSINT-розвідка та безпечний дизайн",
                     skipLink: "Перейти до вмісту",
@@ -1208,6 +1519,16 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
                     ]
                 },
                 ru: {
+                    "dp-eyebrow": "Secure Infrastructure",
+                    "dp-title": "Хранение и защита разведданных",
+                    "dp-desc": "Все результаты OSINT-исследований, аудитов цифрового следа и мониторинга утечек хранятся в изолированном децентрализованном контуре. Мы применяем сквозное шифрование военного уровня для предотвращения любого несанкционированного доступа.",
+                    "dp-strong-1": "AES-256-GCM шифрование:",
+                    "dp-li-1": "Все данные шифруются на лету перед записью на физические носители.",
+                    "dp-strong-2": "Zero-Knowledge архитектура:",
+                    "dp-li-2": "У нас нет прямого доступа к вашим паролям и приватным ключам расшифровки.",
+                    "dp-strong-3": "Автоматическое уничтожение:",
+                    "dp-li-3": "Возможность настройки self-destruct таймеров для отчетов.",
+                    "dp-btn": "Заказать аудит инфраструктуры",
                     htmlLang: "ru",
                     pageTitle: "API.DEVS — кибербезопасность, OSINT-разведка и безопасный дизайн",
                     skipLink: "Перейти к содержимому",
@@ -1608,5 +1929,418 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
         })();
     </script>
 
+    <!-- ============================================================
+         Motion (motion.dev) + 3D interaction layer
+         Free/open-source. Adds: spring hero entrance, cursor spotlight,
+         3D tilt cards (21st.dev-style), magnetic buttons.
+         ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/motion@10.18.0/dist/motion.js"></script>
+    <script>
+        (function () {
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var canHover = window.matchMedia('(hover: hover)').matches;
+            var hasMotion = typeof Motion !== 'undefined';
+            var animate = hasMotion ? Motion.animate : null;
+            var stagger = hasMotion ? Motion.stagger : null;
+
+            /* ---------- Hero entrance: spring stagger ---------- */
+            if (!reduceMotion && animate) {
+                var heroEls = document.querySelectorAll('.hero-text > *');
+                animate(heroEls,
+                    { opacity: [0, 1], transform: ['translateY(28px) scale(.97)', 'translateY(0px) scale(1)'] },
+                    { delay: stagger(0.1, { startDelay: 0.05 }), duration: 0.9, easing: [0.22, 1.4, 0.36, 1] }
+                );
+                var scanWidget = document.getElementById('scanWidget');
+                if (scanWidget) {
+                    animate(scanWidget,
+                        { opacity: [0, 1], transform: ['translateY(34px) scale(.95) rotateX(4deg)', 'translateY(0px) scale(1) rotateX(0deg)'] },
+                        { delay: 0.25, duration: 1, easing: [0.22, 1.4, 0.36, 1] }
+                    );
+                }
+            }
+
+            /* ---------- Cursor spotlight (smoothed follow) ---------- */
+            var glow = document.getElementById('cursorGlow');
+            if (glow && canHover && !reduceMotion) {
+                var gx = window.innerWidth / 2, gy = window.innerHeight / 2, cx = gx, cy = gy;
+                document.addEventListener('mousemove', function (e) {
+                    gx = e.clientX; gy = e.clientY;
+                    glow.classList.add('is-active');
+                });
+                document.addEventListener('mouseleave', function () { glow.classList.remove('is-active'); });
+                (function loop() {
+                    cx += (gx - cx) * 0.12;
+                    cy += (gy - cy) * 0.12;
+                    glow.style.transform = 'translate(' + cx + 'px,' + cy + 'px) translate(-50%,-50%)';
+                    requestAnimationFrame(loop);
+                })();
+            }
+
+            /* ---------- 3D tilt on glass cards (21st.dev-style) ---------- */
+            if (canHover && !reduceMotion) {
+                var tiltCards = document.querySelectorAll('.service-card, .price-card, .testimonial-card, .network-card, .scan-card');
+                tiltCards.forEach(function (card) {
+                    card.style.transformStyle = 'preserve-3d';
+                    var rect = null;
+                    card.addEventListener('mouseenter', function () {
+                        rect = card.getBoundingClientRect();
+                        card.style.transition = 'transform .08s linear, border-color .4s ease, box-shadow .4s ease';
+                    });
+                    card.addEventListener('mousemove', function (e) {
+                        if (!rect) rect = card.getBoundingClientRect();
+                        var px = (e.clientX - rect.left) / rect.width;
+                        var py = (e.clientY - rect.top) / rect.height;
+                        var rx = (0.5 - py) * 9;
+                        var ry = (px - 0.5) * 11;
+                        card.style.transform = 'perspective(1000px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateY(-6px) scale(1.015)';
+                    });
+                    card.addEventListener('mouseleave', function () {
+                        card.style.transition = 'transform .7s cubic-bezier(.22,1.42,.36,1), border-color .4s ease, box-shadow .4s ease';
+                        card.style.transform = '';
+                        rect = null;
+                    });
+                });
+            }
+
+            /* ---------- Magnetic buttons ---------- */
+            if (canHover && !reduceMotion) {
+                document.querySelectorAll('.btn-primary, .btn-ghost').forEach(function (btn) {
+                    btn.classList.add('btn-magnetic');
+                    btn.addEventListener('mousemove', function (e) {
+                        var r = btn.getBoundingClientRect();
+                        var mx = e.clientX - (r.left + r.width / 2);
+                        var my = e.clientY - (r.top + r.height / 2);
+                        btn.style.transform = 'translate(' + (mx * 0.18).toFixed(1) + 'px,' + (my * 0.28).toFixed(1) + 'px)';
+                    });
+                    btn.addEventListener('mouseleave', function () {
+                        btn.style.transform = '';
+                    });
+                });
+            }
+        })();
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const preloader = document.getElementById('osint-preloader');
+            const skipTimer = document.getElementById('skip-timer');
+            const statusText = document.getElementById('preloader-status-text');
+            const l1 = document.getElementById('term-l1');
+            const l2 = document.getElementById('term-l2');
+            const l3 = document.getElementById('term-l3');
+
+            let timeLeft = 7; // Оптимальное время автоматической загрузки
+            let animationActive = true;
+
+            // Блокируем скролл страницы на время анимации
+            document.body.classList.add('preloader-active');
+
+            // Функция скрытия прелоадера
+            function bypassPreloader() {
+                if (!animationActive) return;
+                animationActive = false;
+                preloader.classList.add('fade-out');
+                document.body.classList.remove('preloader-active');
+                setTimeout(() => {
+                    preloader.remove();
+                }, 1000);
+            }
+
+            // Таймер обратного отсчета
+            const countdown = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    skipTimer.textContent = timeLeft + 's';
+                } else {
+                    clearInterval(countdown);
+                    bypassPreloader();
+                }
+            }, 1000);
+
+            // Ускоренный динамический сценарий логов под 7 секунд
+            const logs = [
+                { t: 0, status: "INITIALIZING OSINT CORE...", l1: "> CONNECTING ENTITY RELATION DATABASE...", l2: "", l3: "" },
+                { t: 1.0, status: "SCANNING WHOIS RECORDS...", l1: "> COMPILING PUBLIC RECORDS...", l2: "[192.168.12.84] - EXTRACTING WHOIS...", l3: "" },
+                { t: 2.0, status: "MAPPING NETWORK NODES...", l1: "[192.168.12.84] - EXTRACTING WHOIS...", l2: "> BUILDING METADATA GRAPH...", l3: "RELATION ENGINE: OK [98.2%]" },
+                { t: 3.2, status: "COMPILING DIGITAL FOOTPRINT...", l1: "> CHECKING EXPOSED DATABASES...", l2: "[ALERT] - POTENTIAL BREACHES IDENTIFIED", l3: "LOGGING THREAT INTELLIGENCE DIRECTIVES..." },
+                { t: 4.5, status: "RESOLVING DOMAINS & IP...", l1: "[INFO] TARGET HOSTNAMES LOADED SUCCESSFULLY", l2: "> GENERATING CYBERSECURITY PROFILE...", l3: "CORRELATING TARGET VULNERABILITIES..." },
+                { t: 5.8, status: "ACCESS GRANTED.", l1: "SUCCESS: DECRYPTED PUBLIC LEDGERS.", l2: "SYSTEM SECURE. DEPLOYING INTERFACE...", l3: "WELCOME TO API.DEVS" }
+            ];
+
+            logs.forEach(log => {
+                setTimeout(() => {
+                    if (!animationActive) return;
+                    statusText.textContent = log.status;
+                    if (log.l1) l1.textContent = log.l1;
+                    if (log.l2) l2.textContent = log.l2;
+                    if (log.l3) l3.textContent = log.l3;
+                }, log.t * 1000);
+            });
+
+
+            /* ============================================================
+               3D GRAPH ENGINE ON CANVAS (Mathematical 3D Sphere)
+               ============================================================ */
+            const canvas = document.getElementById('preloader-3d-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = canvas.offsetWidth * dpr;
+                canvas.height = canvas.offsetHeight * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            resizeCanvas();
+
+            const points = [];
+            const numPoints = 35;
+            const radius = 95;
+
+            for (let i = 0; i < numPoints; i++) {
+                const theta = Math.acos(Math.random() * 2 - 1);
+                const phi = Math.random() * Math.PI * 2;
+
+                points.push({
+                    x: radius * Math.sin(theta) * Math.cos(phi),
+                    y: radius * Math.sin(theta) * Math.sin(phi),
+                    z: radius * Math.cos(theta),
+                    color: Math.random() > 0.4 ? '#4FE3FF' : '#9B6BFF'
+                });
+            }
+
+            let angleX = 0.006;
+            let angleY = 0.008;
+
+            function rotateX(point, radians) {
+                const cos = Math.cos(radians);
+                const sin = Math.sin(radians);
+                const y = point.y * cos - point.z * sin;
+                const z = point.y * sin + point.z * cos;
+                return { x: point.x, y: y, z: z, color: point.color };
+            }
+
+            function rotateY(point, radians) {
+                const cos = Math.cos(radians);
+                const sin = Math.sin(radians);
+                const x = point.x * cos + point.z * sin;
+                const z = -point.x * sin + point.z * cos;
+                return { x: x, y: point.y, z: z, color: point.color };
+            }
+
+            function render() {
+                if (!animationActive) return;
+                requestAnimationFrame(render);
+
+                ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+                const cx = canvas.offsetWidth / 2;
+                const cy = canvas.offsetHeight / 2;
+                const fov = 350;
+
+                // Отрисовка связей
+                ctx.lineWidth = 0.7;
+                for (let i = 0; i < points.length; i++) {
+                    let p1 = points[i];
+                    p1 = rotateX(p1, angleX);
+                    p1 = rotateY(p1, angleY);
+                    points[i] = p1;
+
+                    const scale1 = fov / (fov + p1.z);
+                    const x1 = p1.x * scale1 + cx;
+                    const y1 = p1.y * scale1 + cy;
+
+                    for (let j = i + 1; j < points.length; j++) {
+                        const p2 = points[j];
+                        const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
+
+                        if (dist < 105) {
+                            const scale2 = fov / (fov + p2.z);
+                            const x2 = p2.x * scale2 + cx;
+                            const y2 = p2.y * scale2 + cy;
+
+                            const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+                            grad.addColorStop(0, p1.color);
+                            grad.addColorStop(1, p2.color);
+
+                            const alpha = Math.min(scale1, scale2) * (1 - dist / 105) * 0.45;
+                            ctx.strokeStyle = grad;
+                            ctx.globalAlpha = alpha;
+
+                            ctx.beginPath();
+                            ctx.moveTo(x1, y1);
+                            ctx.lineTo(x2, y2);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1.0;
+
+                // Рисуем ноды
+                for (let i = 0; i < points.length; i++) {
+                    const p = points[i];
+                    const scale = fov / (fov + p.z);
+                    const x = p.x * scale + cx;
+                    const y = p.y * scale + cy;
+                    const size = Math.max(1, (p.z + radius) / (radius * 2) * 5 + 1.5);
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowBlur = size * 2;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            render();
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const canvas = document.getElementById("servers-3d-canvas");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+
+            let width = canvas.width = canvas.offsetWidth;
+            let height = canvas.height = canvas.offsetHeight;
+
+            window.addEventListener("resize", () => {
+                width = canvas.width = canvas.offsetWidth;
+                height = canvas.height = canvas.offsetHeight;
+            });
+
+            // Координаты мыши для интерактивного наклона всей сцены
+            let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+            canvas.addEventListener("mousemove", (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.targetX = (e.clientX - rect.left - width / 2) / (width / 2);
+                mouse.targetY = (e.clientY - rect.top - height / 2) / (height / 2);
+            });
+
+            canvas.addEventListener("mouseleave", () => {
+                mouse.targetX = 0;
+                mouse.targetY = 0;
+            });
+
+            // Настройки серверов
+            const serverCount = 4; // Количество стоек
+            const slotsPerServer = 6; // Лезвий в каждой стойке
+
+            // Стили (подтягиваем из вашей темы)
+            const cyanColor = "#4FE3FF";
+            const violetColor = "#9B6BFF";
+
+            function drawServerBlade(x, y, z, w, h, isHovered, activePulse) {
+                // Проекция 3D в 2D (изометрия с наклоном от мыши)
+                const fov = 300;
+                const scale = fov / (fov + z);
+
+                const px = x * scale + width / 2;
+                const py = y * scale + height / 2;
+                const pw = w * scale;
+                const ph = h * scale;
+
+                // Рисуем переднюю панель сервера (стеклянный параллелепипед)
+                ctx.save();
+                ctx.globalAlpha = scale * 0.85;
+
+                // Тело сервера
+                ctx.fillStyle = isHovered ? "rgba(155, 107, 255, 0.15)" : "rgba(10, 13, 23, 0.7)";
+                ctx.strokeStyle = isHovered ? violetColor : "rgba(255, 255, 255, 0.1)";
+                ctx.lineWidth = isHovered ? 1.5 : 1;
+
+                ctx.beginPath();
+                ctx.roundRect(px - pw / 2, py - ph / 2, pw, ph, 4);
+                ctx.fill();
+                ctx.stroke();
+
+                // Светодиоды на сервере
+                const ledCount = 5;
+                const ledSpacing = pw / (ledCount + 1);
+                for (let i = 0; i < ledCount; i++) {
+                    const ledX = (px - pw / 2) + ledSpacing * (i + 1);
+                    const ledY = py;
+
+                    ctx.beginPath();
+                    ctx.arc(ledX, ledY, 2 * scale, 0, Math.PI * 2);
+
+                    // Анимация мерцания светодиодов
+                    const isLedActive = (activePulse + i) % 4 === 0;
+                    if (isHovered) {
+                        ctx.fillStyle = violetColor;
+                        ctx.shadowColor = violetColor;
+                        ctx.shadowBlur = 8;
+                    } else if (isLedActive) {
+                        ctx.fillStyle = cyanColor;
+                        ctx.shadowColor = cyanColor;
+                        ctx.shadowBlur = 6;
+                    } else {
+                        ctx.fillStyle = "rgba(79, 227, 255, 0.15)";
+                        ctx.shadowBlur = 0;
+                    }
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            let frame = 0;
+            function render() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Плавный наклон сцены за мышью
+                mouse.x += (mouse.targetX - mouse.x) * 0.08;
+                mouse.y += (mouse.targetY - mouse.y) * 0.08;
+
+                frame++;
+                const activePulse = Math.floor(frame / 12);
+
+                // Массив объектов для сортировки по глубине (Z-index)
+                const renderQueue = [];
+
+                // Генерируем 3D-координаты для серверов
+                for (let s = 0; s < serverCount; s++) {
+                    // Распределяем стойки по горизонтали
+                    const rawX = (s - (serverCount - 1) / 2) * 130;
+                    // Смещение от мышки по оси X и Y
+                    const x3d = rawX + mouse.x * 25;
+
+                    for (let l = 0; l < slotsPerServer; l++) {
+                        const rawY = (l - (slotsPerServer - 1) / 2) * 35;
+                        const y3d = rawY + mouse.y * 20;
+
+                        // Глубина (стойки слегка развернуты полубоком)
+                        const z3d = 120 + (s * 15) - (mouse.y * 30);
+
+                        // Проверяем, наведен ли курсор на конкретную стойку
+                        const mxNorm = mouse.x * (width / 2) + width / 2;
+                        const myNorm = mouse.y * (height / 2) + height / 2;
+                        const isHovered = Math.abs(mouse.targetX * 120 - rawX) < 60;
+
+                        renderQueue.push({
+                            x: x3d,
+                            y: y3d,
+                            z: z3d,
+                            w: 100,
+                            h: 22,
+                            isHovered: isHovered,
+                            depth: z3d
+                        });
+                    }
+                }
+
+                // Сортируем элементы (Painter's algorithm), чтобы задние слои не перекрывали передние
+                renderQueue.sort((a, b) => b.depth - a.depth);
+
+                // Отрисовка
+                renderQueue.forEach(item => {
+                    drawServerBlade(item.x, item.y, item.z, item.w, item.h, item.isHovered, activePulse);
+                });
+
+                requestAnimationFrame(render);
+            }
+
+            render();
+        });
+    </script>
 </body>
 </html>
