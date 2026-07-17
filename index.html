@@ -987,26 +987,26 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
             <div class="container">
                 <div class="osint-grid">
                     <div class="reveal-stagger">
-                        <div class="eyebrow" id="dp-eyebrow">Secure Infrastructure</div>
-                        <h2 id="dp-title">Хранение и защита разведданных</h2>
-                        <p class="text-secondary" style="margin-bottom: 1.5rem;" id="dp-desc">
+                        <div class="eyebrow" id="dp-eyebrow" data-i18n="eyebrowServ">Secure Infrastructure</div>
+                        <h2 id="dp-title" data-i18n="titleServ">Хранение и защита разведданных</h2>
+                        <p class="text-secondary" style="margin-bottom: 1.5rem;" id="dp-desc"  data-i18n="descServ">
                             Все результаты OSINT-исследований, аудитов цифрового следа и мониторинга утечек хранятся в изолированном децентрализованном контуре. Мы применяем сквозное шифрование военного уровня для предотвращения любого несанкционированного доступа.
                         </p>
                         <ul class="osint-list" style="margin-bottom: 2rem;">
                             <li>
                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
-                                <span><strong id="dp-strong-1">AES-256-GCM шифрование:</strong> <span id="dp-li-1">Все данные шифруются на лету перед записью на физические носители.</span></span>
+                                <span><strong id="dp-strong-1"  data-i18n="strong1Serv">AES-256-GCM шифрование:</strong> <span id="dp-li-1" data-i18n="li1Serv">Все данные шифруются на лету перед записью на физические носители.</span></span>
                             </li>
                             <li>
                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
-                                <span><strong id="dp-strong-2">Zero-Knowledge архитектура:</strong> <span id="dp-li-2">У нас нет прямого доступа к вашим паролям и приватным ключам расшифровки.</span></span>
+                                <span><strong id="dp-strong-2"  data-i18n="strong2Serv">Zero-Knowledge архитектура:</strong> <span id="dp-li-2" data-i18n="li2Serv">У нас нет прямого доступа к вашим паролям и приватным ключам расшифровки.</span></span>
                             </li>
                             <li>
                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
-                                <span><strong id="dp-strong-3">Автоматическое уничтожение:</strong> <span id="dp-li-3">Возможность настройки self-destruct таймеров для отчетов.</span></span>
+                                <span><strong id="dp-strong-3"  data-i18n="strong3Serv">Автоматическое уничтожение:</strong> <span id="dp-li-3" data-i18n="li3Serv">Возможность настройки self-destruct таймеров для отчетов.</span></span>
                             </li>
                         </ul>
-                        <a href="#contact" class="btn btn-primary btn-magnetic" id="dp-btn">Заказать аудит инфраструктуры</a>
+                        <a href="#contact" class="btn btn-primary btn-magnetic" id="dp-btn"  data-i18n="btnServ">Заказать аудит инфраструктуры</a>
                     </div>
 
                     <div class="network-card glass tilt" style="min-height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
@@ -1191,16 +1191,16 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
             /* ---------- Localization Dictionary ---------- */
             var i18n = {
                 en: {
-                    "dp-eyebrow": "Secure Infrastructure",
-                    "dp-title": "Storage & Protection of Intelligence Data",
-                    "dp-desc": "All results of OSINT investigations, digital footprint audits, and leak monitoring are stored in an isolated, decentralized perimeter. We apply military-grade end-to-end encryption to prevent any unauthorized access.",
-                    "dp-strong-1": "AES-256-GCM encryption:",
-                    "dp-li-1": "All data is encrypted on the fly before being written to physical media.",
-                    "dp-strong-2": "Zero-Knowledge architecture:",
-                    "dp-li-2": "We have no direct access to your passwords or private decryption keys.",
-                    "dp-strong-3": "Automatic self-destruction:",
-                    "dp-li-3": "Ability to configure self-destruct timers for generated reports.",
-                    "dp-btn": "Request infrastructure audit",
+                    eyebrowServ: "Secure Infrastructure",
+                    titleServ: "Storage & Protection of Intelligence Data",
+                    descServ: "All results of OSINT investigations, digital footprint audits, and leak monitoring are stored in an isolated, decentralized perimeter. We apply military-grade end-to-end encryption to prevent any unauthorized access.",
+                    strong1Serv: "AES-256-GCM encryption:",
+                    li1Serv: "All data is encrypted on the fly before being written to physical media.",
+                    strong2Serv: "Zero-Knowledge architecture:",
+                    li2Serv: "We have no direct access to your passwords or private decryption keys.",
+                    strong3Serv: "Automatic self-destruction:",
+                    li3Serv: "Ability to configure self-destruct timers for generated reports.",
+                    btnServ: "Request infrastructure audit",
                     htmlLang: "en",
                     pageTitle: "API.DEVS — cybersecurity, OSINT-intelligence and secure design",
                     skipLink: "Skip to content",
@@ -1355,16 +1355,16 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
                     ]
                 },
                 uk: {
-                    "dp-eyebrow": "Secure Infrastructure",
-                    "dp-title": "Зберігання та захист розвідданих",
-                    "dp-desc": "Усі результати OSINT-досліджень, аудитів цифрового сліду та моніторингу витоків зберігаються в ізольованому децентралізованому контурі. Ми застосовуємо наскрізне шифрування військового рівня для запобігання будь-якому несанкціонованому доступу.",
-                    "dp-strong-1": "AES-256-GCM шифрування:",
-                    "dp-li-1": "Усі дані шифруються на льоту перед записом на фізичні носії.",
-                    "dp-strong-2": "Zero-Knowledge архітектура:",
-                    "dp-li-2": "Ми не маємо прямого доступу до ваших паролів та приватних ключів розшифрування.",
-                    "dp-strong-3": "Автоматичне знищення:",
-                    "dp-li-3": "Можливість налаштування self-destruct таймерів для звітів.",
-                    "dp-btn": "Замовити аудит інфраструктури",
+                    eyebrowServ: "Secure Infrastructure",
+                    titleServ: "Зберігання та захист розвідданих",
+                    descServ: "Усі результати OSINT-досліджень, аудитів цифрового сліду та моніторингу витоків зберігаються в ізольованому децентралізованому контурі. Ми застосовуємо наскрізне шифрування військового рівня для запобігання будь-якому несанкціонованому доступу.",
+                    strong1Serv: "AES-256-GCM шифрування:",
+                    li1Serv: "Усі дані шифруються на льоту перед записом на фізичні носії.",
+                    strong2Serv: "Zero-Knowledge архітектура:",
+                    li2Serv: "Ми не маємо прямого доступу до ваших паролів та приватних ключів розшифрування.",
+                    strong3Serv: "Автоматичне знищення:",
+                    li3Serv: "Можливість налаштування self-destruct таймерів для звітів.",
+                    btnServ: "Замовити аудит інфраструктури",
                     htmlLang: "uk",
                     pageTitle: "API.DEVS — кібербезпека, OSINT-розвідка та безпечний дизайн",
                     skipLink: "Перейти до вмісту",
@@ -1519,16 +1519,16 @@ footer{padding:clamp(3rem,6vw,4.5rem) 0 2rem;border-top:1px solid var(--glass-bo
                     ]
                 },
                 ru: {
-                    "dp-eyebrow": "Secure Infrastructure",
-                    "dp-title": "Хранение и защита разведданных",
-                    "dp-desc": "Все результаты OSINT-исследований, аудитов цифрового следа и мониторинга утечек хранятся в изолированном децентрализованном контуре. Мы применяем сквозное шифрование военного уровня для предотвращения любого несанкционированного доступа.",
-                    "dp-strong-1": "AES-256-GCM шифрование:",
-                    "dp-li-1": "Все данные шифруются на лету перед записью на физические носители.",
-                    "dp-strong-2": "Zero-Knowledge архитектура:",
-                    "dp-li-2": "У нас нет прямого доступа к вашим паролям и приватным ключам расшифровки.",
-                    "dp-strong-3": "Автоматическое уничтожение:",
-                    "dp-li-3": "Возможность настройки self-destruct таймеров для отчетов.",
-                    "dp-btn": "Заказать аудит инфраструктуры",
+                    eyebrowServ: "Secure Infrastructure",
+                    titleServ: "Хранение и защита разведданных",
+                    descServ: "Все результаты OSINT-исследований, аудитов цифрового следа и мониторинга утечек хранятся в изолированном децентрализованном контуре. Мы применяем сквозное шифрование военного уровня для предотвращения любого несанкционированного доступа.",
+                    strong1Serv: "AES-256-GCM шифрование:",
+                    li1Serv: "Все данные шифруются на лету перед записью на физические носители.",
+                    strong2Serv: "Zero-Knowledge архитектура:",
+                    li2Serv: "У нас нет прямого доступа к вашим паролям и приватным ключам расшифровки.",
+                    strong3Serv: "Автоматическое уничтожение:",
+                    li3Serv: "Возможность настройки self-destruct таймеров для отчетов.",
+                    btnServ: "Заказать аудит инфраструктуры",
                     htmlLang: "ru",
                     pageTitle: "API.DEVS — кибербезопасность, OSINT-разведка и безопасный дизайн",
                     skipLink: "Перейти к содержимому",
